@@ -73,6 +73,10 @@ class Program
                 break;
             case 'Q':
                 lastAction = "Avslutar Shoppen";
+                Console.Clear();
+                var exitWindow = new UX.Window("Välkommen åter!", 45, 10, new List<string> { lastAction, "Tryck på valfri tangent..." });
+                exitWindow.Draw();
+                Console.ReadKey(true);
                 isRunning = !isRunning;
                 break;
             default:
