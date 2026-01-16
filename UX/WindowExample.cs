@@ -1,3 +1,5 @@
+using Spelshoppen.Models;
+
 namespace Spelshoppen.UX;
 
 public class WindowExample
@@ -19,4 +21,23 @@ public class WindowExample
 
 
     }
+
+    public static Window FeaturedWindow(ProductItem item, int left, int top, int index)
+    {
+        string title = item.Products?.Title ?? "Okänd produkt";
+        string condition = item.Condition ?? "Ny";
+
+        List<string> content = new List<string>
+        {   title,
+            $"Skick: {condition}",
+            $"Pris: {item.Price}",
+            $"Lager: {item.UnitsInStock}",
+            $"Tryck {index} för att köpa"
+        };
+        return new Window($"Produkt{index}", left, top, content);
+
+    }
+    
+    
+    
 }

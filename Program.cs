@@ -64,71 +64,71 @@ class Program
             // }
             #endregion
 
-            using (var db = new MyDbContext())
-            {
-                var categories = new List<Category>
-                {
-                    new Category { Title = "Spel ", Description = "Vår spelkollektion till alla plattformar!" },
-                    new Category { Title = "Konsoler", Description = "Hårdvara" },
-                    new Category { Title = "Tillbehör", Description = "Handkontroller, kablar etc." }
-                };
-                db.AddRange(categories);
-                db.SaveChanges();
-
-                var genres = new List<Genre>
-                {
-                    new Genre {Name = "Action"},
-                    new Genre {Name = "FPS"},
-                    new Genre {Name = "RPG"},
-                    new Genre {Name = "Platformer"},
-                    new Genre {Name = "Horror"}
-                    
-                };
-                db.AddRange(genres);
-                db.SaveChanges();
-                var supplier = new List<Supplier>
-                {
-                    new Supplier
-                        { PublisherName = "Sony", ContactName = "Hiraka Yoshida", ContactInformation = "hiyo@sony.jp" },
-                    new Supplier
-                    {
-                        PublisherName = "Microsoft", ContactName = "Filip Spenderare",
-                        ContactInformation = "fisp@ms.net"
-                    },
-                    new Supplier
-                    {
-                        PublisherName = "Nintendo", ContactName = "Göran Folkskog",
-                        ContactInformation = "gofo@nintendo.se"
-                    }
-                };
-                db.AddRange(supplier);
-                db.SaveChanges();
-                var eldenRing = new Product
-                {
-                    Title = "Elden Ring",
-                    Description = "Ett episkt äventyr med action element!",
-                    CategoryId = categories[0].Id,
-                };
-                db.Products.Add(eldenRing);
-                db.SaveChanges();
-                
-                db.ProductGenres.AddRange(
-                    new ProductGenre { ProductId = eldenRing.Id, GenreId = genres[0].Id },
-                    new ProductGenre { ProductId = eldenRing.Id, GenreId = genres[2].Id }
-                );
-                db.ProductItems.Add(new ProductItem
-                {
-                    ProductId = eldenRing.Id,
-                    SupplierId = supplier[0].Id,
-                    Price = 599.99m,
-                    UnitsInStock = 7,
-                    Condition = "Nytt",
-                    IsFeatured = true
-                });
-                db.SaveChanges();
-
-            }
-            
+        //     using (var db = new MyDbContext())
+        //     {
+        //         var categories = new List<Category>
+        //         {
+        //             new Category { Title = "Spel ", Description = "Vår spelkollektion till alla plattformar!" },
+        //             new Category { Title = "Konsoler", Description = "Hårdvara" },
+        //             new Category { Title = "Tillbehör", Description = "Handkontroller, kablar etc." }
+        //         };
+        //         db.AddRange(categories);
+        //         db.SaveChanges();
+        //
+        //         var genres = new List<Genre>
+        //         {
+        //             new Genre {Name = "Action"},
+        //             new Genre {Name = "FPS"},
+        //             new Genre {Name = "RPG"},
+        //             new Genre {Name = "Platformer"},
+        //             new Genre {Name = "Horror"}
+        //             
+        //         };
+        //         db.AddRange(genres);
+        //         db.SaveChanges();
+        //         var supplier = new List<Supplier>
+        //         {
+        //             new Supplier
+        //                 { PublisherName = "Sony", ContactName = "Hiraka Yoshida", ContactInformation = "hiyo@sony.jp" },
+        //             new Supplier
+        //             {
+        //                 PublisherName = "Microsoft", ContactName = "Filip Spenderare",
+        //                 ContactInformation = "fisp@ms.net"
+        //             },
+        //             new Supplier
+        //             {
+        //                 PublisherName = "Nintendo", ContactName = "Göran Folkskog",
+        //                 ContactInformation = "gofo@nintendo.se"
+        //             }
+        //         };
+        //         db.AddRange(supplier);
+        //         db.SaveChanges();
+        //         var eldenRing = new Product
+        //         {
+        //             Title = "Elden Ring",
+        //             Description = "Ett episkt äventyr med action element!",
+        //             CategoryId = categories[0].Id,
+        //         };
+        //         db.Products.Add(eldenRing);
+        //         db.SaveChanges();
+        //         
+        //         db.ProductGenres.AddRange(
+        //             new ProductGenre { ProductId = eldenRing.Id, GenreId = genres[0].Id },
+        //             new ProductGenre { ProductId = eldenRing.Id, GenreId = genres[2].Id }
+        //         );
+        //         db.ProductItems.Add(new ProductItem
+        //         {
+        //             ProductId = eldenRing.Id,
+        //             SupplierId = supplier[0].Id,
+        //             Price = 599.99m,
+        //             UnitsInStock = 7,
+        //             Condition = "Nytt",
+        //             IsFeatured = true
+        //         });
+        //         db.SaveChanges();
+        //
+        //     }
+        //     
         }
         
     }
