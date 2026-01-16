@@ -7,6 +7,12 @@ public class Product
     public string? Description { get; set; }
 
     public int CategoryId { get; set; }
-    public virtual Category Category { get; set; }
+    public virtual Category Categories { get; set; }
+    
+    //Många genres
+    public virtual ICollection<ProductGenre> ProductGenres { get; set; } = new List<ProductGenre>();
+    
+    // Ny/Begagnad
+    public virtual ICollection<ProductItem> ProductItems { get; set; } = new List<ProductItem>();
     
 }
