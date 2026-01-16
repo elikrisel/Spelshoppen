@@ -8,62 +8,80 @@ class Program
 {
     static void Main(string[] args)
     {
-        while (true)
-        {
-            #region Menu - Commented for now
-            // //Titel
-            // List<string> topText = new List<string> { "# Spelshoppen #", "Finns nu i Konsol app!" };
-            // var windowTop = new UX.Window("", 45, 1, topText);
-            // windowTop.Draw();
-            //
-            // // Hämtar från databasen
-            // List<string> categoriesText = new List<string> { "1. Spel", "2. Konsoler", "3. Tillbehör" };
-            //
-            // // Detta hämtas från databas
-            // List<string> cartText = new List<string> { "1 st PS4, Metro Exodus", "1 st NSW Pro Controller", "Tryck X för att checka ut" };
-            // var windowCart = new UX.Window("Din varukorg", 75, 1, cartText);
-            // windowCart.Draw();
-            //
-            // List<string> topText3 = new List<string> { "1. Startsida", "2. Shoppen", "3. Varukorgen" };
-            // var windowTop3 = new UX.Window("Kundmeny", 2, 1, topText3);
-            // windowTop3.Draw();
-            //
-            //
-            // var windowCategories = new UX.Window("Kategorier", 2, 20, categoriesText);
-            // windowCategories.Draw();
-            // WindowExample.DrawShop();
-            //
-            //
-            //
-            // List<string> topText2 = new List<string> { "NSW2, The Legend of Zelda: Tears of the Kingdom",
-            //     "PS5, The Last Of Us Part 2: Remastered", "XBONE, Starfield" };
-            // var windowTop2 = new UX.Window("Bäst säljande produkter", 25, 6, topText2);
-            // windowTop2.Draw();
-            //
-            //
-            // List<string> topText4 = new List<string> { "1. Administrera produkter", "2. Administrera kategorier", "3. Administrera kunder", "4. Se statistik(Queries)" };
-            // var windowTop4 = new UX.Window("Admin", 75, 20, topText4);
-            // windowTop4.Draw();
-            //
-            //
-            //
-            // Console.WriteLine();
-            // Console.WriteLine("Tryck för att navigera i menyn");
-            //
-            // ConsoleKeyInfo keyInfo = Console.ReadKey();
-            // Console.Clear();
-            //
-            //
-            // switch (keyInfo.KeyChar)
-            // {
-            //     
-            //     case '1':
-            //         Console.WriteLine(" Du har tryckt 1");
-            //         break;
-            //     
-            // }
-            #endregion
+        bool isRunning = true;
+        string lastAction = "Startsida";
+        
+        
+        while (isRunning)
+        { 
+            Console.Clear();
+            Lowest.LowestPosition = 0;
+            
+        var windowTop = new UX.Window("", 45, 1, new List<string> { "# Spelshoppen #", "Finns nu i Konsol app!" });
+        windowTop.Draw();
+        
+        var windowMenu = new UX.Window("Kundmeny", 2, 1, new List<string> { "1. Startsida", "2. Shoppen", "3. Varukorgen" });
+        windowMenu.Draw();
+        
+        var windowCart = new UX.Window("Din varukorg", 75, 1, new List<string> { "1 st PS4, Metro Exodus", "1 st NSW Pro Controller", "Tryck X för att checka ut" });
+        windowCart.Draw();
+        
+        var windowBestSellers = new UX.Window("Bäst säljande produkter", 25, 6, new List<string> { 
+            "NSW2, The Legend of Zelda: Tears of the Kingdom",
+            "PS5, The Last Of Us Part 2: Remastered", "XBONE, Starfield" 
+        });
+        windowBestSellers.Draw();
+        
+        var windowCategories = new UX.Window("Kategorier", 2, 20, new List<string> { "1. Spel", "2. Konsoler", "3. Tillbehör" });
+        windowCategories.Draw();
+        
+        WindowExample.DrawShop();
+        
+        var windowAdmin = new UX.Window("Admin", 75, 20, new List<string> { "4. Produkter", "5. Kategorier", "6. Kunder", "7. Statistik" });
+        windowAdmin.Draw();
+        
+        var windowStatus = new UX.Window("Systemstatus", 35, 20, new List<string> { lastAction });
+        windowStatus.Draw();
 
+        Console.SetCursorPosition(0, Lowest.LowestPosition + 1);
+        Console.WriteLine("Navigera genom att trycka på knapparna i fönstren [Tryck Q för att avsluta]");
+        
+        ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+        
+        switch (char.ToUpper(keyInfo.KeyChar))
+        {
+            case '1':
+                lastAction = "Laddar Startsidan...";
+                break;
+            case '2':
+                lastAction = "Öppnar Shoppen...";
+                break;
+            case 'A':
+                lastAction = "La till 'Tröja' i varukorgen!";
+                break;
+            case 'B':
+                lastAction = "La till 'Byxor' i varukorgen!";
+                break;
+            case 'C':
+                lastAction = "La till 'Läderskor' i varukorgen!";
+                break;
+            case 'X':
+                lastAction = "Går till kassan...";
+                break;
+            case '4':
+                lastAction = "Öppnar Admin: Produkter";
+                break;
+            case 'Q':
+                lastAction = "Avslutar Shoppen";
+                isRunning = !isRunning;
+                break;
+            default:
+                lastAction = $"Knapp '{keyInfo.KeyChar}' har ingen funktion än.";
+                break;
+        }
+            
+            
+         #region Testing with local database   
         //     using (var db = new MyDbContext())
         //     {
         //         var categories = new List<Category>
@@ -129,6 +147,7 @@ class Program
         //
         //     }
         //     
+        #endregion
         }
         
     }

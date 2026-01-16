@@ -34,7 +34,7 @@ public class WindowExample
             $"Lager: {item.UnitsInStock}",
             $"Tryck {index} för att köpa"
         };
-        return new Window($"Produkt{index}", left, top, content);
+        return new Window($"Produkt {index}", left, top, content);
 
     }
     
