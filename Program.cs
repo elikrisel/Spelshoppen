@@ -2,6 +2,7 @@
 
 namespace Spelshoppen;
 
+//Shoppen och kundkorgen högsta prioritet
 class Program
 {
     static void Main(string[] args)
