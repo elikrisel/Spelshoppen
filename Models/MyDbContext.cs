@@ -20,4 +20,11 @@ public class MyDbContext : DbContext
         modelBuilder.Entity<ProductItem>().Property(p => p.Price).HasPrecision(18, 2);
         
     }
+    
+    //TODO: Testing purposes only
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=Spelshoppen;Trusted_Connection=True; TrustServerCertificate=True;");
+    }
+    
 }
