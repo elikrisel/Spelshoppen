@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Spelshoppen.Transactions;
 
 namespace Spelshoppen.Models;
 
@@ -10,6 +11,14 @@ public class MyDbContext : DbContext
     public DbSet<ProductGenre> ProductGenres { get; set; }
     public DbSet<Genre> Genres { get; set; }
     public DbSet<Supplier> Suppliers { get; set; }
+    
+    public DbSet<City> Cities { get; set; }
+    public DbSet<Country> Countries { get; set; }
+    public DbSet<Customer> Customers { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderLine> OrderLines { get; set; }
+    public DbSet<PaymentMethod> PaymentMethods { get; set; }
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
