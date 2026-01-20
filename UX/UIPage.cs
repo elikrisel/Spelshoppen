@@ -2,16 +2,16 @@ namespace Spelshoppen.UX;
 
 public class UIPage
 {
-    public static Dictionary<MenuState, string> Labels = new Dictionary<MenuState, string>()
+    public static Dictionary<MenuState, string> Labels = new()
     {
-        { MenuState.MainMenu,      "[S] Startsida"},
+        { MenuState.MainMenu,      "[S] Startsida" },
         { MenuState.CategoryMenu,  "[K] Kategorier"},
         {MenuState.AdminMenu,      "[A] Admin"     },
-        { MenuState.CartMenu,      "[V] Varukorgen"     },
-        { MenuState.Quit,          "[Q] Quit"     }
+        { MenuState.CartMenu,      "[V] Varukorgen"},
+        { MenuState.Quit,          "[Q] Quit"      }
     };
 
-    public static Dictionary<char, MenuState> KeyBindings = new Dictionary<char, MenuState>()
+    public static Dictionary<char, MenuState> KeyBindings = new()
     {
         {'S', MenuState.MainMenu},
         {'K', MenuState.CategoryMenu},

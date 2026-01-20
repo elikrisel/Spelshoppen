@@ -36,6 +36,18 @@ public class WindowExample
         categoryWindow.Draw();
 
     }
+
+    public static void DrawProductMenu(MyDbContext db, int selectedId)
+    {
+        if (selectedId <= 0) return;
+        
+        var products = db.Products.Where(p => p.CategoryId == selectedId).ToList();
+        List<string> productRows = products.Select(p => $"#{p.Title}").ToList();
+        
+        var productWindow = new UX.Window("Sortiment: ",40,8,productRows);
+        productWindow.Draw();
+    }
+    
     
     public static Window FeaturedWindow(ProductItem item, int left, int top, int index)
     {

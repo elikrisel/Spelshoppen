@@ -10,6 +10,7 @@ class Program
     {
         bool isRunning = true;
         MenuState menuState = MenuState.MainMenu;
+        int selectedCategoryId = 0;
         //string lastAction = "Startsida";
         
         #region Databas commented
@@ -236,6 +237,7 @@ class Program
                         break;
                     case MenuState.CategoryMenu:
                         WindowExample.DrawCategoryMenu(db);
+                        WindowExample.DrawProductMenu(db,selectedCategoryId);
                         break;
                     case MenuState.AdminMenu:
                         break;
@@ -259,7 +261,19 @@ class Program
                 if (UIPage.KeyBindings.TryGetValue(input, out var binding))
                 {
                     menuState = binding;
-                    
+                    selectedCategoryId = 0;
+
+                }
+                else if (menuState == MenuState.CategoryMenu && char.IsDigit(input))
+                {
+                    int index = (int)char.GetNumericValue(input) - 1;
+                    var categories = db.Categories.OrderBy(c => c.Id).ToList();
+
+                    if (index >= 0 && index < categories.Count)
+                    {
+                        // Här mappar vi: Om användaren tryckte 1, hämtar vi ID:t för första kategorin (t.ex. 7)
+                        selectedCategoryId = categories[index].Id;
+                    }
                     
                 }
                 
