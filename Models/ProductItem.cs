@@ -5,7 +5,7 @@ public class ProductItem
     public int Id { get; set; }
 
     public int ProductId { get; set; }
-    public virtual Product Products { get; set; }
+    public virtual Product? Products { get; set; }
 
     public int? SupplierId { get; set; }
     public virtual Supplier Suppliers { get; set; }

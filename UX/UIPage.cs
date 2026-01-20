@@ -39,4 +39,19 @@ public class UIPage
         welcomeWindow.Draw();
         
     }
+
+    public static void ShowNotification(string message)
+    {
+        int y = Lowest.LowestPosition + 5;
+        Console.SetCursorPosition(0, y);
+        Console.WriteLine(Helpers.ShowXNumberOfLines(50));
+        Console.WriteLine($"{message} : Tryck på valfri tangent för att fortsätta...");
+        Console.WriteLine(Helpers.ShowXNumberOfLines(50));
+        Console.ReadKey(true);
+
+    }
+    
+    
+    
+    
 }

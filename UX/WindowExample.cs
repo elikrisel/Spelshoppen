@@ -17,12 +17,12 @@ public class WindowExample
 
         var categoryWindow = new UX.Window("Kategorier:", 20, 8, categoryRows);
         categoryWindow.Draw();
+        
     }
 
     public static void DrawProductMenu(MyDbContext db, int selectedId)
     {
         if (selectedId <= 0) return;
-
         var categoryName = db.Categories.FirstOrDefault(c => c.Id == selectedId)?.Title;
 
         var products = db.Products.Where(p => p.CategoryId == selectedId).ToList();
@@ -30,6 +30,7 @@ public class WindowExample
 
         var productWindow = new UX.Window($"{categoryName}", 40, 8, productRows);
         productWindow.Draw();
+        Console.WriteLine("[V] för att välja ID [B] För att gå tillbaks till Kategorier");
     }
 
     public static void DrawProductDetails(MyDbContext db, int productId)
@@ -38,13 +39,15 @@ public class WindowExample
             .ThenInclude(pg => pg.Genres).FirstOrDefault(p => p.Id == productId);
 
         var item = product.ProductItems.FirstOrDefault();
+        bool canBuy = item.UnitsInStock > 0;
         List<string> itemDetails = new List<string>
         {
             $"Titel: {product.Title}",
             $"Beskrivning: {product.Description}",
             $"Lager: {item?.UnitsInStock}",
             $"Lager: {item?.Price}",
-            $"Skick: {item?.Condition}"
+            $"Skick: {item?.Condition}",
+            canBuy ? "[K] KÖP PRODUKT" : "SLUT PÅ LAGRET"
         };
 
         var detailWindow = new UX.Window($"{product.Title}", 50, 12, itemDetails);
@@ -52,19 +55,5 @@ public class WindowExample
     }
 
 
-    public static Window FeaturedWindow(ProductItem item, int left, int top, int index)
-    {
-        string title = item.Products?.Title ?? "Okänd produkt";
-        string condition = item.Condition ?? "Ny";
 
-        List<string> content = new List<string>
-        {
-            title,
-            $"Skick: {condition}",
-            $"Pris: {item.Price}",
-            $"Lager: {item.UnitsInStock}",
-            $"Tryck {index} för att köpa"
-        };
-        return new Window($"Produkt {index}", left, top, content);
-    }
 }
