@@ -225,6 +225,8 @@ class Program
             { 
                 Console.Clear();
                 Lowest.LowestPosition = 0;
+                
+                Helpers.ShowDebugInfo(menuState);
                 UIPage.GlobalLayout(menuState);
             
                 switch (menuState)
@@ -249,7 +251,7 @@ class Program
                 //var windowStatus = new UX.Window("Systemstatus", 35, 20, new List<string> { lastAction });
                 //windowStatus.Draw();
 
-                Console.SetCursorPosition(0, Lowest.LowestPosition);
+                //Console.SetCursorPosition(0, Lowest.LowestPosition);
                 Console.WriteLine("Navigera genom att trycka på knapparna i fönstren [Tryck Q för att avsluta]");
         
                 ConsoleKeyInfo keyInfo = Console.ReadKey(true);
