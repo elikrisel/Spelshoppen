@@ -21,7 +21,22 @@ public class WindowExample
 
 
     }
+    
+    public static void DrawCategoryMenu(MyDbContext db)
+    {
+        var categories = db.Categories.ToList();
+        List<string> categoryRows = new List<string>();
 
+        for (int i = 0; i < categories.Count; i++)
+        {
+            categoryRows.Add($"[{i + 1}] {categories[i].Title}");
+        }
+        
+        var categoryWindow = new UX.Window("Kategorier:",35,8,categoryRows);
+        categoryWindow.Draw();
+
+    }
+    
     public static Window FeaturedWindow(ProductItem item, int left, int top, int index)
     {
         string title = item.Products?.Title ?? "Okänd produkt";

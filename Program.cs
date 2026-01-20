@@ -9,8 +9,10 @@ class Program
     static void Main(string[] args)
     {
         bool isRunning = true;
-        string lastAction = "Startsida";
-
+        MenuState menuState = MenuState.MainMenu;
+        //string lastAction = "Startsida";
+        
+        #region Databas commented
         // using (var db = new MyDbContext())
         // {
         //     if (!db.Products.Any())
@@ -215,82 +217,75 @@ class Program
         //         Console.WriteLine($"Antal genre-kopplingar: {db.ProductGenres.Count()}");
         //     }
         // }
-        
-        
-        while (isRunning)
-        { 
-            Console.Clear();
-            Lowest.LowestPosition = 0;
-            
-        var windowTop = new UX.Window("", 45, 1, new List<string> { "# Spelshoppen #", "Finns nu i Konsol app!" });
-        windowTop.Draw();
-        
-        var windowMenu = new UX.Window("Kundmeny", 2, 1, new List<string> { "1. Startsida", "2. Shoppen", "3. Varukorgen" });
-        windowMenu.Draw();
-        
-        var windowCart = new UX.Window("Din varukorg", 75, 1, new List<string> { "1 st PS4, Metro Exodus", "1 st NSW Pro Controller", "Tryck X för att checka ut" });
-        windowCart.Draw();
-        
-        var windowBestSellers = new UX.Window("Bäst säljande produkter", 25, 6, new List<string> { 
-            "NSW2, The Legend of Zelda: Tears of the Kingdom",
-            "PS5, The Last Of Us Part 2: Remastered", "XBONE, Starfield" 
-        });
-        windowBestSellers.Draw();
-        
-        var windowCategories = new UX.Window("Kategorier", 2, 20, new List<string> { "1. Spel", "2. Konsoler", "3. Tillbehör" });
-        windowCategories.Draw();
-        
-        WindowExample.DrawShop();
-        
-        var windowAdmin = new UX.Window("Admin", 75, 20, new List<string> { "4. Produkter", "5. Kategorier", "6. Kunder", "7. Statistik" });
-        windowAdmin.Draw();
-        
-        var windowStatus = new UX.Window("Systemstatus", 35, 20, new List<string> { lastAction });
-        windowStatus.Draw();
+        #endregion
 
-        Console.SetCursorPosition(0, Lowest.LowestPosition + 1);
-        Console.WriteLine("Navigera genom att trycka på knapparna i fönstren [Tryck Q för att avsluta]");
-        
-        ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-        
-        switch (char.ToUpper(keyInfo.KeyChar))
+        using (var db = new MyDbContext())
         {
-            case '1':
-                lastAction = "Laddar Startsidan...";
-                break;
-            case '2':
-                lastAction = "Öppnar Shoppen...";
-                break;
-            case 'A':
-                lastAction = "La till 'Erbjudande 1' i varukorgen!";
-                break;
-            case 'B':
-                lastAction = "La till 'Erbjudande 2' i varukorgen!";
-                break;
-            case 'C':
-                lastAction = "La till 'Erbjudande 3' i varukorgen!";
-                break;
-            case 'X':
-                lastAction = "Går till kassan...";
-                break;
-            case '4':
-                lastAction = "Öppnar Admin: Produkter";
-                break;
-            case 'Q':
-                lastAction = "Avslutar Shoppen";
+            while (isRunning)
+            { 
                 Console.Clear();
-                var exitWindow = new UX.Window("Välkommen åter!", 45, 10, new List<string> { lastAction, "Tryck på valfri tangent..." });
-                exitWindow.Draw();
-                Console.ReadKey(true);
-                isRunning = !isRunning;
-                break;
-            default:
-                lastAction = $"Knapp '{keyInfo.KeyChar}' har ingen funktion än.";
-                break;
-        }
-
-
-        }
+                Lowest.LowestPosition = 0;
+                UIPage.GlobalLayout(menuState);
+            
+                switch (menuState)
+                {
+                    case MenuState.MainMenu:
+                        UIPage.StartPage();
+                        break;
+                    case MenuState.CategoryMenu:
+                        WindowExample.DrawCategoryMenu(db);
+                        break;
+                    case MenuState.AdminMenu:
+                        break;
+                    case MenuState.CartMenu:
+                        break;
+                    case MenuState.Quit:
+                        isRunning = false;
+                        break;
+                }
         
-    }
+        
+        
+                //var windowStatus = new UX.Window("Systemstatus", 35, 20, new List<string> { lastAction });
+                //windowStatus.Draw();
+
+                Console.SetCursorPosition(0, Lowest.LowestPosition);
+                Console.WriteLine("Navigera genom att trycka på knapparna i fönstren [Tryck Q för att avsluta]");
+        
+                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                char input = char.ToUpper(keyInfo.KeyChar);
+                if (UIPage.KeyBindings.TryGetValue(input, out var binding))
+                {
+                    menuState = binding;
+                    
+                    
+                }
+                
+                
+                // switch (char.ToUpper(keyInfo.KeyChar))
+                // {
+                //
+                //     case 'K':
+                //         menuState = MenuState.CategoryMenu;
+                //         lastAction = "Öppnar Kategorier";
+                //         break;
+                //     case 'A':
+                //         lastAction = "Avslutar Shoppen";
+                //         Console.Clear();
+                //         var exitWindow = new UX.Window("Välkommen åter!", 45, 10, new List<string> { lastAction, "Tryck på valfri tangent..." });
+                //         exitWindow.Draw();
+                //         Console.ReadKey(true);
+                //         isRunning = !isRunning;
+                //         break;
+                //     default:
+                //         lastAction = $"Knapp '{keyInfo.KeyChar}' har ingen funktion än.";
+                //         break;
+                // }
+
+
+            }
+        
+        }
+    } 
 }
+        
