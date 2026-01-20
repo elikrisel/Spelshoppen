@@ -41,10 +41,11 @@ public class WindowExample
     {
         if (selectedId <= 0) return;
         
+        var categoryName = db.Categories.FirstOrDefault(c => c.Id == selectedId)?.Title;
         var products = db.Products.Where(p => p.CategoryId == selectedId).ToList();
-        List<string> productRows = products.Select(p => $"#{p.Title}").ToList();
+        List<string> productRows = products.Select(p => $"{p.Title}").ToList();
         
-        var productWindow = new UX.Window("Sortiment: ",40,8,productRows);
+        var productWindow = new UX.Window($"{categoryName}",40,8,productRows);
         productWindow.Draw();
     }
     
