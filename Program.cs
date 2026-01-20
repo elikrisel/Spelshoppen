@@ -11,7 +11,7 @@ class Program
         bool isRunning = true;
         MenuState menuState = MenuState.MainMenu;
         int selectedCategoryId = 0;
-        //string lastAction = "Startsida";
+        int selectedProductId = 0;
         
         #region Databas commented
         // using (var db = new MyDbContext())
@@ -38,7 +38,15 @@ class Program
                         break;
                     case MenuState.CategoryMenu:
                         WindowExample.DrawCategoryMenu(db);
-                        WindowExample.DrawProductMenu(db,selectedCategoryId);
+                        if (selectedCategoryId != 0 && selectedProductId == 0)
+                        {
+                            WindowExample.DrawProductMenu(db,selectedCategoryId);
+                            
+                        }
+                        else if (selectedProductId != 0)
+                        {
+                            WindowExample.DrawProductDetails(db, selectedProductId);
+                        }
                         break;
                     case MenuState.AdminMenu:
                         break;
@@ -58,20 +66,57 @@ class Program
                 {
                     menuState = binding;
                     selectedCategoryId = 0;
-        
-                }
-                //Ta bort sen
-                else if (menuState == MenuState.CategoryMenu && char.IsDigit(input))
+                    selectedProductId = 0;
+
+                }else if (input == 'B')
                 {
-                    int index = (int)char.GetNumericValue(input) - 1;
-                    var categories = db.Categories.OrderBy(c => c.Id).ToList();
-        
-                    if (index >= 0 && index < categories.Count)
+                    if (selectedProductId != 0)
+                    {
+                        selectedProductId = 0;
+                    }
+                    else if (selectedCategoryId != 0)
                     {
                         
-                        selectedCategoryId = categories[index].Id;
+                        selectedCategoryId = 0;
                     }
+                }
+                //Ta bort sen
+                else if (menuState == MenuState.CategoryMenu && input == 'V')
+                {
+                    // // 
+                    // // var categories = db.Categories.OrderBy(c => c.Id).ToList();
+                    // //
+                    // // if (index >= 0 && index < categories.Count)
+                    // // {
+                    // //     
+                    // //     selectedCategoryId = categories[index].Id;
+                    // // }
+                    // if (selectedCategoryId == 0 && char.IsDigit(input))
+                    // {
+                    //     int index = (int)char.GetNumericValue(input) - 1;
+                    // }
+                    // Flytta markören under fönstren
+                    Console.SetCursorPosition(0, Lowest.LowestPosition + 2);
+                    Console.Write("Ange ID (Kategori eller Produkt) och tryck Enter: ");
                     
+                    string idInput = Console.ReadLine();
+
+                    if (int.TryParse(idInput, out int chosenId))
+                    {
+                     
+                        if (selectedCategoryId == 0)
+                        {
+                            if (db.Categories.Any(c => c.Id == chosenId))
+                                selectedCategoryId = chosenId;
+                        }
+                        else
+                        {
+                            if (db.Products.Any(p => p.Id == chosenId))
+                                selectedProductId = chosenId;
+                        }
+                    }
+
+
                 }
                 
         

@@ -16,7 +16,7 @@ public class UIPage
         {'S', MenuState.MainMenu},
         {'K', MenuState.CategoryMenu},
         {'A', MenuState.AdminMenu},
-        {'V', MenuState.CartMenu},
+        {'C', MenuState.CartMenu},
         {'Q', MenuState.Quit},
     };
 
@@ -37,5 +37,6 @@ public class UIPage
     {
         var welcomeWindow = new UX.Window("Välkommen!", 25, 6, new List<string> { "Välkommen till Spelshoppen!" });
         welcomeWindow.Draw();
+        
     }
 }
