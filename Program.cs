@@ -33,9 +33,10 @@ class Program
 
                 Helpers.ShowDebugInfo(menuState);
                 UIPage.GlobalLayout(menuState);
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.SetCursorPosition(80,2);
                 Console.WriteLine($"Varukorg: {cart.Count} stycken");
-                
+                Console.ResetColor();
                 
                 switch (menuState)
                 {
@@ -62,11 +63,9 @@ class Program
                         isRunning = false;
                         break;
                 }
-
-
-                Console.WriteLine("Navigera genom att trycka på knapparna i fönstren [Tryck Q för att avsluta]");
-
+                
                 ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                
                 char input = char.ToUpper(keyInfo.KeyChar);
                 if (UIPage.KeyBindings.TryGetValue(input, out var binding))
                 {
@@ -76,16 +75,27 @@ class Program
                 }
                 else if (input == 'B')
                 {
-                    if (selectedProductId != 0)
+                    if (selectedProductId != 0) selectedProductId = 0;
+                    else if (selectedCategoryId != 0) selectedCategoryId = 0;
+                }
+                else if (char.IsDigit(input) && menuState == MenuState.CategoryMenu)
+                {
+                    int chosenId = InputHandler.PromptForId(input);
+        
+                    if (selectedCategoryId == 0)
                     {
-                        selectedProductId = 0;
+                        // Validera att kategorin finns
+                        if (db.Categories.Any(c => c.Id == chosenId))
+                            selectedCategoryId = chosenId;
                     }
-                    else if (selectedCategoryId != 0)
+                    else if (selectedProductId == 0)
                     {
-                        selectedCategoryId = 0;
+                        // Validera att produkten finns i denna kategori
+                        if (db.Products.Any(p => p.Id == chosenId && p.CategoryId == selectedCategoryId))
+                            selectedProductId = chosenId;
                     }
                 }
-                else if (menuState == MenuState.CategoryMenu && input == 'K' && selectedProductId != 0)
+                else if (keyInfo.Key == ConsoleKey.Enter && selectedProductId != 0)
                 {
                     var boughtProduct = StoreServices.PurchaseProduct(db, selectedProductId);
         
@@ -99,28 +109,8 @@ class Program
                         UIPage.ShowNotification("Varan kunde inte läggas i varukorgen");
                     }
                 }
-                //Ta bort sen
-                else if (menuState == MenuState.CategoryMenu && input == 'V')
-                {
-                    Console.SetCursorPosition(0, Lowest.LowestPosition + 2);
-                    Console.Write("Ange Kategori ID och tryck Enter: ");
-
-                    string idInput = Console.ReadLine();
-
-                    if (int.TryParse(idInput, out int chosenId))
-                    {
-                        if (selectedCategoryId == 0)
-                        {
-                            if (db.Categories.Any(c => c.Id == chosenId))
-                                selectedCategoryId = chosenId;
-                        }
-                        else
-                        {
-                            if (db.Products.Any(p => p.Id == chosenId))
-                                selectedProductId = chosenId;
-                        }
-                    }
-                }
+                
+                
             }
         }
     }
