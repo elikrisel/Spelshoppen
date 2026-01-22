@@ -9,11 +9,8 @@ class Program
     static void Main(string[] args)
     {
         bool isRunning = true;
-        List<Product> cart = new List<Product>();
-        MenuState menuState = MenuState.MainMenu;
-        int selectedCategoryId = 0;
-        int selectedProductId = 0;
-
+        UserSession session = new UserSession();
+        
         #region Databas commented
 
         // using (var db = new MyDbContext())
@@ -28,89 +25,10 @@ class Program
         {
             while (isRunning)
             {
-                Console.Clear();
-                Lowest.LowestPosition = 0;
-
-                Helpers.ShowDebugInfo(menuState);
-                UIPage.GlobalLayout(menuState);
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.SetCursorPosition(80,2);
-                Console.WriteLine($"Varukorg: {cart.Count} stycken");
-                Console.ResetColor();
-                
-                switch (menuState)
-                {
-                    case MenuState.MainMenu:
-                        UIPage.StartPage();
-                        break;
-                    case MenuState.CategoryMenu:
-                        WindowExample.DrawCategoryMenu(db);
-                        if (selectedCategoryId != 0 && selectedProductId == 0)
-                        {
-                            WindowExample.DrawProductMenu(db, selectedCategoryId);
-                        }
-                        else if (selectedProductId != 0)
-                        {
-                            WindowExample.DrawProductDetails(db, selectedProductId);
-                        }
-
-                        break;
-                    case MenuState.AdminMenu:
-                        break;
-                    case MenuState.CartMenu:
-                        break;
-                    case MenuState.Quit:
-                        isRunning = false;
-                        break;
-                }
-                
-                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-                
-                char input = char.ToUpper(keyInfo.KeyChar);
-                if (UIPage.KeyBindings.TryGetValue(input, out var binding))
-                {
-                    menuState = binding;
-                    selectedCategoryId = 0;
-                    selectedProductId = 0;
-                }
-                else if (input == 'B')
-                {
-                    if (selectedProductId != 0) selectedProductId = 0;
-                    else if (selectedCategoryId != 0) selectedCategoryId = 0;
-                }
-                else if (char.IsDigit(input) && menuState == MenuState.CategoryMenu)
-                {
-                    int chosenId = InputHandler.PromptForId(input);
-        
-                    if (selectedCategoryId == 0)
-                    {
-                        // Validera att kategorin finns
-                        if (db.Categories.Any(c => c.Id == chosenId))
-                            selectedCategoryId = chosenId;
-                    }
-                    else if (selectedProductId == 0)
-                    {
-                        // Validera att produkten finns i denna kategori
-                        if (db.Products.Any(p => p.Id == chosenId && p.CategoryId == selectedCategoryId))
-                            selectedProductId = chosenId;
-                    }
-                }
-                else if (keyInfo.Key == ConsoleKey.Enter && selectedProductId != 0)
-                {
-                    var boughtProduct = StoreServices.PurchaseProduct(db, selectedProductId);
-        
-                    if (boughtProduct != null)
-                    {
-                        cart.Add(boughtProduct);
-                        UIPage.ShowNotification($"{boughtProduct.Title} tillagd i korgen!");
-                    }
-                    else
-                    {
-                        UIPage.ShowNotification("Varan kunde inte läggas i varukorgen");
-                    }
-                }
-                
-                
+                UIRenderer.Display(session.State, db, session.SelectedCategoryId, session.SelectedProductId, session.Cart.Count);
+                var key = Console.ReadKey(true);
+                InputHandler.HandleInput(key,session,db);
+                if(session.State == MenuState.Quit) isRunning = false;
             }
         }
     }

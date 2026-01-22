@@ -5,23 +5,24 @@ namespace Spelshoppen;
 
 public class StoreServices
 {
-    public static Product? PurchaseProduct(MyDbContext db, int productId)
+    
+// Hämtar allt för detaljvyn: Produkt, dess Items (lager/pris) och dess Genrer
+    public static Product? GetFullProduct(MyDbContext db, int productId)
     {
-        // Viktigt: 'Products' måste matcha namnet i din ProductItem-klass!
-        var item = db.ProductItems
-            .Include(p => p.Products) 
-            .FirstOrDefault(p => p.ProductId == productId);
-
-        if (item != null && item.UnitsInStock > 0)
-        {
-            item.UnitsInStock--;
-            // db.SaveChanges(); // Kommenterad för test
-            return item.Products; 
-        }
-        return null;
+        return db.Products
+            .Include(p => p.ProductItems)
+            .ThenInclude(pi => pi.Suppliers)
+            .Include(p => p.ProductGenres)
+            .ThenInclude(pg => pg.Genres)
+            .FirstOrDefault(p => p.Id == productId);
     }
 
-    
-    
+    public static ProductItem? GetPurchaseableItem(MyDbContext db, int productId)
+    {
+        // Vi letar efter ett item för denna produkt som faktiskt finns i lager
+        return db.ProductItems
+            .Include(pi => pi.Products)
+            .FirstOrDefault(pi => pi.ProductId == productId && pi.UnitsInStock > 0);
+    }
     
 }
