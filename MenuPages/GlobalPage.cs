@@ -7,7 +7,7 @@ public class GlobalPage
         var windowTop = new UX.Window("", 45, 1, new List<string> { "# Spelshoppen #", "Finns nu i Konsol app!" });
         windowTop.Draw();
         
-        var menuRows = InputHandler.Labels.Where(kvp => kvp.Key != state)
+        var menuRows = InputHandler.MenuLabel.Where(kvp => kvp.Key != state)
             .Select(kvp => kvp.Value).ToList();
 
         var windowMenu = new UX.Window("Kundmeny", 2, 1, menuRows);

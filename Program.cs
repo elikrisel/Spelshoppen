@@ -25,10 +25,18 @@ class Program
         {
             while (isRunning)
             {
-                UIRenderer.DrawPage(session.State, db, session, session.Cart.Count);
+                
+                //Letar upp den aktuella sidan från min StateMachine
+                if (InputHandler.Pages.TryGetValue(session.State, out var currentPage))
+                {
+                    // 2. Sidan ritar sig själv (inklusive header, menyer och innehåll)
+                    currentPage.Draw(db, session);
+                }
+                
                 var key = Console.ReadKey(true);
-                InputHandler.HandleInput(key,session,db);
-                if(session.State == MenuState.Quit) isRunning = false;
+                InputHandler.HandleInput(key, session, db);
+
+                if (session.State == MenuState.Quit) isRunning = false;
             }
         }
     }

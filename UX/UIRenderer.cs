@@ -4,35 +4,25 @@ namespace Spelshoppen.UX;
 
 public class UIRenderer
 {
-    public static void DrawPage(MenuState state, MyDbContext db, UserSession session, int cartCount)
+    public static void DrawBaseLayout(UserSession session)
     {
         Console.Clear();
-        Lowest.LowestPosition = 0;
-        
-        GlobalPage.GlobalLayout(state);
-        
+        UX.Lowest.LowestPosition = 0;
+    
+        // Varukorg
         Console.ForegroundColor = ConsoleColor.Green;
         Console.SetCursorPosition(80, 2);
-        Console.WriteLine($"Varukorg: {cartCount} stycken");
+        Console.Write($"Varukorg: {session.Cart.Count} stycken");
         Console.ResetColor();
 
-        switch (state)
-        {
-            case MenuState.MainMenu:
-                GlobalPage.StartPage();
-                break;
-            case MenuState.CategoryMenu:
-                CategoryMenu.Draw(db,session);
-                break;
-            case MenuState.AdminMenu:
-                break;
-            case MenuState.CartMenu:
-                break;
-            case MenuState.Quit:
-                break;
-            
-        }
-        
+        // Toppfönster
+        new UX.Window("", 45, 1, new List<string> { "# Spelshoppen #", "Finns nu i Konsol app!" }).Draw();
+    
+        // Sidomeny
+        var menuRows = InputHandler.MenuLabel
+            .Where(kvp => kvp.Key != session.State)
+            .Select(kvp => kvp.Value).ToList();
+        new UX.Window("Kundmeny", 2, 1, menuRows).Draw();
     }
 
     public static void DrawNotifications(UserSession session)
@@ -59,7 +49,6 @@ public class UIRenderer
             "Tryck [ENTER] för att Köpa eller skriv ett annat ID för att gå till en annan produkt:"
         };
         
-        // Om det fanns en notis kommer LowestPosition ha ökat
         Console.SetCursorPosition(0, Console.CursorTop + 1); 
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write($" >> {prompts[session.CurrentStep]}: ");

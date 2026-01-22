@@ -7,10 +7,10 @@ public class UserSession
     public MenuState State { get; set; } = MenuState.MainMenu;
     public int SelectedCategoryId { get; set; }
     public int SelectedProductId { get; set; }
-    
     public string NotificationMessage { get; set; }
     public List<ProductItem> Cart { get; set; } = new();
-
+    
+    //Steptracker 
     public int CurrentStep
     {
         get

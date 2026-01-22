@@ -4,7 +4,7 @@ public enum MenuState
 {
     MainMenu,
     CategoryMenu,
-    AdminMenu,
     CartMenu,
+    AdminMenu,
     Quit
 }
