@@ -19,6 +19,8 @@ public class InputHandler
     //     return int.TryParse(firstDigit + restOfInput, out int id) ? id : 0;
     // }
     
+    
+    
     public static int PromptForId(char firstDigit)
     {
         Console.Write(firstDigit); // Skriver ut första siffran direkt efter "Skriv ID: "
@@ -51,41 +53,44 @@ public class InputHandler
     public static void HandleInput(ConsoleKeyInfo key, UserSession session, MyDbContext db)
     {
         char input = char.ToUpper(key.KeyChar);
-
-        // Global navigering (S, K, A, V, Q)
+        
         if (KeyBindings.TryGetValue(input, out var newState))
         {
             session.State = newState;
             session.ResetSelection();
             return;
         }
-
-        // ID-val med din PromptForId (Hanterar både val och byte av produkt)
+        
         if (char.IsDigit(input) && session.State == MenuState.CategoryMenu)
         {
             int id = PromptForId(input); 
 
             if (session.SelectedCategoryId == 0)
             {
-                if (db.Categories.Any(c => c.Id == id)) session.SelectedCategoryId = id;
+                if (db.Categories.Any(c => c.Id == id)) 
+                    session.SelectedCategoryId = id;
+                else 
+                    session.NotificationMessage = $"Kategori {id} finns inte!";
             }
             else 
             {
-                // Om produkten finns i kategorin, byt till den (seamless)
                 if (db.Products.Any(p => p.Id == id && p.CategoryId == session.SelectedCategoryId))
                     session.SelectedProductId = id;
+                else 
+                    session.NotificationMessage = $"Produkt {id} finns inte i denna kategori!";
             }
             return;
         }
 
-        // Seamless Köp (ENTER)
+        
         if (key.Key == ConsoleKey.Enter && session.SelectedProductId != 0)
         {
             var item = StoreServices.GetPurchaseableItem(db, session.SelectedProductId);
             if (item != null)
             {
                 session.Cart.Add(item);
-                session.SelectedProductId = 0; // Stänger detaljfönstret direkt
+                session.NotificationMessage = $"{item.Products?.Title} tillagd!";
+                session.SelectedProductId = 0;
             }
         }
     }

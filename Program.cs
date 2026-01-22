@@ -25,7 +25,7 @@ class Program
         {
             while (isRunning)
             {
-                UIRenderer.Display(session.State, db, session.SelectedCategoryId, session.SelectedProductId, session.Cart.Count);
+                UIRenderer.DrawPage(session.State, db, session, session.Cart.Count);
                 var key = Console.ReadKey(true);
                 InputHandler.HandleInput(key,session,db);
                 if(session.State == MenuState.Quit) isRunning = false;

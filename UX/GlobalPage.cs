@@ -1,6 +1,6 @@
 namespace Spelshoppen.UX;
 
-public class UIPage
+public class GlobalPage
 {
     public static void GlobalLayout(MenuState state)
     {
@@ -21,17 +21,7 @@ public class UIPage
         welcomeWindow.Draw();
         
     }
-
-    public static void ShowNotification(string message)
-    {
-        int y = Lowest.LowestPosition + 5;
-        Console.SetCursorPosition(0, y);
-        Console.WriteLine(Helpers.ShowXNumberOfLines(50));
-        Console.WriteLine($"{message}");
-        Console.WriteLine(Helpers.ShowXNumberOfLines(50));
-        
-
-    }
+    
     
     
     
