@@ -24,14 +24,14 @@ public class CategoryMenu
     private static void DrawCategoryMenu(MyDbContext db)
     {
         var categories = db.Categories.Select(c => $"[{c.Id}] {c.Title}").ToList();
-        new UX.Window("Kategorier", 20, 8, categories).Draw();    
+        new UX.Window("Kategorier", 10, 8, categories).Draw();    
     }
     
     private static void DrawProductWindow(MyDbContext db, int categoryId)
     {
         var products = db.Products.Where(p => p.CategoryId == categoryId)
             .Select(p => $"[{p.Id}] {p.Title}").ToList();
-        new UX.Window("Produkter", 40, 8, products).Draw();
+        new UX.Window("Produkter", 30, 8, products).Draw();
     }
 
     private static void DrawProductDetailsWindow(MyDbContext db, int productId)
@@ -55,7 +55,7 @@ public class CategoryMenu
                 "",
                 item?.UnitsInStock > 0 ? "[ENTER] LÄGG I VARUKORG" : "SLUT I LAGER"
             };
-            new UX.Window("PRODUKTINFORMATION", 70, 8, productDetails).Draw();
+            new UX.Window("PRODUKTINFORMATION", 75, 8, productDetails).Draw();
         
     }
     
