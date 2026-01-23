@@ -29,8 +29,9 @@ class Program
                 //Letar upp den aktuella sidan från min StateMachine
                 if (InputHandler.Pages.TryGetValue(session.State, out var currentPage))
                 {
-                    // 2. Sidan ritar sig själv (inklusive header, menyer och innehåll)
+                    //Ritar upp för varje state
                     currentPage.Draw(db, session);
+                    
                 }
                 
                 var key = Console.ReadKey(true);

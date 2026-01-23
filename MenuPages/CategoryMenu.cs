@@ -57,7 +57,7 @@ public class CategoryMenu : IMenuPage
 
     private void HandlePurchase(MyDbContext db, UserSession session)
     {
-        var item = StoreServices.GetPurchaseableItem(db, session.SelectedProductId);
+        var item = StoreServices.GetPurchasableItem(db, session.SelectedProductId);
         if (item != null)
         {
             session.Cart.Add(item);

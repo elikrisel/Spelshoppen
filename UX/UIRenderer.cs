@@ -8,7 +8,10 @@ public class UIRenderer
     {
         Console.Clear();
         UX.Lowest.LowestPosition = 0;
-    
+        
+        //Debug Window:
+        Console.ForegroundColor = ConsoleColor.Red;
+        Helpers.ShowDebugInfo(session.State);
         // Varukorg
         Console.ForegroundColor = ConsoleColor.Green;
         Console.SetCursorPosition(80, 2);
@@ -26,7 +29,7 @@ public class UIRenderer
     }
 
     public static void DrawNotifications(UserSession session)
-    {
+    { 
         if (string.IsNullOrEmpty(session.NotificationMessage)) return;
 
         Console.SetCursorPosition(0, Lowest.LowestPosition + 2);
@@ -36,10 +39,9 @@ public class UIRenderer
         Console.WriteLine(Helpers.ShowXNumberOfLines(60));
         Console.ResetColor();
 
-        
-        session.NotificationMessage = null;
     }
-
+    
+    //TODO: Flytta över den här till varje meny
     public static void DrawPrompts(UserSession session)
     {
         string[] prompts = 

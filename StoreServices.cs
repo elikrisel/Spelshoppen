@@ -16,7 +16,7 @@ public class StoreServices
             .FirstOrDefault(p => p.Id == productId);
 
     // Vi letar efter ett item för denna produkt som faktiskt finns i lager
-    public static ProductItem? GetPurchaseableItem(MyDbContext db, int productId) =>
+    public static ProductItem? GetPurchasableItem(MyDbContext db, int productId) =>
         db.ProductItems
             .Include(pi => pi.Products)
             .FirstOrDefault(pi => pi.ProductId == productId && pi.UnitsInStock > 0);

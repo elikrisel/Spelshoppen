@@ -23,12 +23,7 @@ public class Window
         var result = new List<string>();
         foreach (var row in originalRows)
         {
-            // if (string.IsNullOrEmpty(row)) 
-            // {
-            //     result.Add("");
-            //     continue;
-            // }
-
+            
             // Om raden är för lång, dela upp den i flera rader
             string[] words = row.Split(' ');
             string currentLine = "";
@@ -49,7 +44,7 @@ public class Window
 
     public void Draw()
     {
-        // Nu kan vi säkert räkna ut bredden eftersom PrepareRows har kört
+        //Räknar ut bredden på texten efter PrepareRows har kört
         var width = TextRows.OrderByDescending(s => s.Length).FirstOrDefault()?.Length ?? 0;
 
         if (width < Header.Length + 4)
