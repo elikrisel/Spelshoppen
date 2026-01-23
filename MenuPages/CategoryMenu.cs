@@ -62,7 +62,8 @@ public class CategoryMenu : IMenuPage
         if (item != null)
         {
             item.UnitsInStock--;
-            db.SaveChanges();
+            
+            //db.SaveChanges();
             session.Cart.Add(item);
             session.NotificationMessage = $"{item.Products?.Title} reserverad och inlagd i varukorgen!";
             session.SelectedProductId = 0;

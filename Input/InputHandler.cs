@@ -57,6 +57,7 @@ public class InputHandler
         {
             session.State = newState;
             session.ResetSelection();
+            while (Console.KeyAvailable) Console.ReadKey(true);
             return;
         }
 
@@ -64,6 +65,10 @@ public class InputHandler
         if (Pages.TryGetValue(session.State, out var currentPage))
         {
             currentPage.HandleInput(key, input, db, session);
+            if (session.State == MenuState.MainMenu && key.Key == ConsoleKey.Enter)
+            {
+                while (Console.KeyAvailable) Console.ReadKey(true);
+            }
         }
     }
 }

@@ -13,33 +13,34 @@ class Program
         
         #region Databas commented
 
-        // using (var db = new MyDbContext())
-        // {
-        //     db.Database.EnsureCreated();
-        //     SeedData(db);
-        // }
+         //using (var db = new MyDbContext())
+         //{
+         //    
+         //    SeedData(db);
+         //}
 
         #endregion
 
-        using (var db = new MyDbContext())
-        {
-            while (isRunning)
-            {
-                
-                //Letar upp den aktuella sidan från min StateMachine
-                if (InputHandler.Pages.TryGetValue(session.State, out var currentPage))
-                {
-                    //Ritar upp för varje state
-                    currentPage.Draw(db, session);
-                    
-                }
-                
-                var key = Console.ReadKey(true);
-                InputHandler.HandleInput(key, session, db);
-
-                if (session.State == MenuState.Quit) isRunning = false;
-            }
-        }
+         using (var db = new MyDbContext())
+         {
+             while (isRunning)
+             {
+                 
+                 //Letar upp den aktuella sidan från min StateMachine
+                 if (InputHandler.Pages.TryGetValue(session.State, out var currentPage))
+                 {
+                     //Ritar upp för varje state
+                     currentPage.Draw(db, session);
+                     
+                 }
+                 
+                 var key = Console.ReadKey(true);
+                 InputHandler.HandleInput(key, session, db);
+                 
+                 
+                 if (session.State == MenuState.Quit) isRunning = false;
+             }
+         }
     }
 
     private static void SeedData(MyDbContext db)
