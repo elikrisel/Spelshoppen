@@ -24,7 +24,7 @@ public class InputHandler
         { MenuState.MainMenu, "[S] Startsida" },
         { MenuState.CategoryMenu, "[K] Kategorier" },
         { MenuState.AdminMenu, "[A] Admin" },
-        { MenuState.CartMenu, "[V] Varukorgen" },
+        { MenuState.CartMenu, "[C] Varukorgen" },
         { MenuState.Quit, "[Q] Quit" }
     };
     

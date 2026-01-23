@@ -58,16 +58,23 @@ public class CategoryMenu : IMenuPage
     private void HandlePurchase(MyDbContext db, UserSession session)
     {
         var item = StoreServices.GetPurchasableItem(db, session.SelectedProductId);
+        
         if (item != null)
         {
+            item.UnitsInStock--;
+            db.SaveChanges();
             session.Cart.Add(item);
-            session.NotificationMessage = $"{item.Products?.Title} tillagd!";
+            session.NotificationMessage = $"{item.Products?.Title} reserverad och inlagd i varukorgen!";
             session.SelectedProductId = 0;
+
         }
         else
         {
-            session.NotificationMessage = "Varan är tyvärr slut i lager!";
+            session.NotificationMessage = $"Varan är tyvärr slut och finns inte i lagret.";
+            session.SelectedProductId = 0;
         }
+        
+        
     }
 
     private static void DrawWindows(MyDbContext db, UserSession session)
