@@ -60,7 +60,7 @@ public class CartMenu : IMenuPage
         switch (session.Status)
         {
             case CheckoutState.ReviewingCart:
-                HandleCartReview(key, input, session);
+                HandleCartReview(key,input,session,db);
                 break;
 
             case CheckoutState.EditingItem:
@@ -69,25 +69,29 @@ public class CartMenu : IMenuPage
 
             case CheckoutState.EnteringDetails:
                 
-                RunCheckoutWizard(session, db);
                 break;
         }
     }
 
-    private void HandleCartReview(ConsoleKeyInfo key, char input, UserSession session)
+    private void HandleCartReview(ConsoleKeyInfo key, char input, UserSession session,MyDbContext db)
     {
         if (char.IsDigit(input))
         {
-            int id = (int)char.GetNumericValue(input);
+            int id = InputHandler.PromptForId(input);
             if (session.CartItem.Keys.Any(k => k.Id == id))
             {
                 session.SelectedProductId = id;
                 session.Status = CheckoutState.EditingItem;
             }
+            else
+            {
+                session.NotificationMessage = "ID hittades inte i varukorgen";
+            }
         }
         else if (key.Key == ConsoleKey.Enter && session.CartItem.Any())
         {
             session.Status = CheckoutState.EnteringDetails;
+            RunCheckout(session, db);
         }
     }
 
@@ -114,7 +118,7 @@ public class CartMenu : IMenuPage
                 }
 
                 break;
-            case 'D':
+            case 'D': //Radera från varukorg
                 item.UnitsInStock += session.CartItem[item];
                 session.CartItem.Remove(item);
                 session.Status = CheckoutState.ReviewingCart;
@@ -123,13 +127,10 @@ public class CartMenu : IMenuPage
         }
     }
 
-    private void RunCheckoutWizard(UserSession session, MyDbContext db)
+    private void RunCheckout(UserSession session, MyDbContext db)
     {
-        Console.Clear();
-        UIRenderer.DrawBaseLayout(session);
-
         
-        Console.SetCursorPosition(0, UX.Lowest.LowestPosition + 2);
+        Helpers.UpdateAndSetCursorPosition();
         Console.WriteLine("KASSA: ANGE DINA UPPGIFTER:");
 
         try
@@ -144,6 +145,10 @@ public class CartMenu : IMenuPage
 
             // Anropa tjänsten som sköter databasjobbet
             OrderService.CreateOrder(db, session);
+            session.CartItem.Clear();
+            session.SelectedProductId = 0;
+            session.Status = CheckoutState.ReviewingCart;
+            session.NotificationMessage = "TACK FÖR DITT KÖP!";
         }
         catch (Exception)
         {
