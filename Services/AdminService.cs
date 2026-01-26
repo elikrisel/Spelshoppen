@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Spelshoppen.Models;
 
 namespace Spelshoppen;
@@ -40,4 +41,25 @@ public class AdminService
         db.SaveChanges();
 
     }
+
+    public static bool DeleteProduct(MyDbContext db, int productId)
+    {
+        //Inkluderar produkt och sen inkluderar Product Genre för att ta bort produkten från genres.
+        var item = db.ProductItems.Include(p => p.Products).
+            ThenInclude(product => product!.ProductGenres).
+            FirstOrDefault(p => p.ProductId == productId);
+        
+        //Tar bort både från Products och ProductItem
+        if (item != null && item.Products != null)
+        {
+            db.ProductGenres.RemoveRange(item.Products.ProductGenres);   
+            db.ProductItems.Remove(item);
+            db.Products.Remove(item.Products);
+            db.SaveChanges();
+        }
+        return true;
+    }
+    
+    
+    
 }
