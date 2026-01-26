@@ -10,12 +10,16 @@ public class InputHandler
     public static int PromptForId(char firstDigit)
     {
         Console.Write(firstDigit);
-        string? restOfInput = Console.ReadLine();
+        string? rest = Console.ReadLine();
+        return int.TryParse(firstDigit + rest, out int id) ? id : 0;
+    }
 
-        if (int.TryParse(firstDigit + restOfInput, out int id))
-            return id;
-
-        return 0;
+    public static int GetAdminIdInput(string message)
+    {
+        Helpers.UpdateAndSetCursorPosition();
+        Console.Write(message);
+        char firstChar = Console.ReadKey(true).KeyChar;
+        return PromptForId(firstChar);
     }
     
     //String Labels till Menyn

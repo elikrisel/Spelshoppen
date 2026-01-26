@@ -41,16 +41,21 @@ public class AdminMenu : IMenuPage
 
     public void HandleInput(ConsoleKeyInfo key, char input, MyDbContext db, UserSession session)
     {
+        int targetId;
         switch (char.ToUpper(input))
         {
             case 'L':
                 AddProduct(db, session);
                 break;
             case 'U':
-                UpdateProduct(db,session);
+                
+                Console.Write("SKRIV ID SOM DU VILL UPPDATERA: ");
+                targetId = InputHandler.PromptForId(Console.ReadKey(true).KeyChar);
+                UpdateProduct(db,session,targetId);
                 break;
             case 'R':
-                DeleteProduct(db, session);
+                targetId = InputHandler.GetAdminIdInput("SKRIV ID SOM DU VILL TA BORT: ");
+                DeleteProduct(db, session,targetId);
                 break;
         }
     }
@@ -114,26 +119,20 @@ public class AdminMenu : IMenuPage
         session.NotificationMessage = $"La in titeln: {title}";
     }
 
-    private void UpdateProduct(MyDbContext db, UserSession session)
+    private void UpdateProduct(MyDbContext db, UserSession session,int id)
     {
-        Helpers.UpdateAndSetCursorPosition(); 
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.Write("ANGE ID FÖR ATT REDIGERA");
-        Console.ResetColor();
-
-        if (!int.TryParse(Console.ReadLine(), out var id)) return;
-
+        
             var item = db.ProductItems.Include(pi => pi.Products)
                 .FirstOrDefault(pi => pi.Id == id);
 
             if (item == null)
             {
-                session.NotificationMessage = "PRODUKTEN HITTADES INTE!";
+                session.NotificationMessage = $"ID {id} HITTADES INTE!";
                 return;
             }
 
-            Console.WriteLine($"\nREDIGERAR {item.Products?.Title}");
-            Console.WriteLine("[1] Ändra Titel [2] Ändra Pris [3] Ändra Lager [4] Ändra Skick");
+            Console.WriteLine($"\nREDIGERAR [{id}] {item.Products?.Title}");
+            Console.WriteLine("[1] Ändra Titel [2] Ändra Pris [3] Ändra Lager [4] Ändra Skick [5] Avbryt");
 
             var choice = Console.ReadKey(true).KeyChar;
 
@@ -159,6 +158,9 @@ public class AdminMenu : IMenuPage
                         item.Condition = newCondition;
                     }
                     break;
+                case '5':
+                    session.NotificationMessage = "Ändring avbruten.";
+                    break;
                 default:
                     return;
             }
@@ -169,16 +171,9 @@ public class AdminMenu : IMenuPage
 
     }
 
-    private static void DeleteProduct(MyDbContext db, UserSession session)
+    private static void DeleteProduct(MyDbContext db, UserSession session, int id)
     {
-        Helpers.UpdateAndSetCursorPosition();
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.Write("ANGE ID PÅ PRODUKTEN SOM DU VILL RADERA: ");
-        Console.ResetColor();
-
         
-        if (int.TryParse(Console.ReadLine(), out var id))
-        {
             var product = db.ProductItems
                 .Include(pi => pi.Products)
                 .FirstOrDefault(pi => pi.Id == id);
@@ -198,6 +193,6 @@ public class AdminMenu : IMenuPage
             {
                 session.NotificationMessage = $"Avbryter radering";
             }
-        }
+        
     }
 }
