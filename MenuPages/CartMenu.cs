@@ -139,6 +139,23 @@ public class CartMenu : IMenuPage
             session.LastName = Prompt("Efternamn: ");
             session.StreetName = Prompt("Gatuadress: ");
             session.CityName = Prompt("Stad: ");
+            
+            //Är Tvungen att inkludera Countries och Payment på grund av hur jag hade satt upp i min databas
+            var countries = db.Countries.ToList();
+            Console.WriteLine("\nVÄLJ LAND (ID):");
+            foreach (var c in countries)
+            {
+                Console.WriteLine($"[{c.Id}] {c.Name}");
+            }
+            
+            session.SelectedCountryId = InputHandler.PromptForId(Console.ReadKey(true).KeyChar);
+            
+            
+            var payments = db.PaymentMethods.ToList();
+            Console.WriteLine("\nVÄLJ BETALSÄTT (ID):");
+            foreach (var p in payments) Console.WriteLine($"[{p.Id}] {p.Name}");
+    
+            session.SelectedPaymentMethodId = InputHandler.PromptForId(Console.ReadKey(true).KeyChar);
 
             // När alla uppgifter är insamlade, gå till nästa state
             session.Status = CheckoutState.ProcessOrder;

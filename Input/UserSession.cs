@@ -7,11 +7,16 @@ public class UserSession
 {
     public MenuState State { get; set; } = MenuState.MainMenu;
     public CheckoutState Status { get; set; } = CheckoutState.ReviewingCart;
+
+    public string FirstName { get; set; } = "";
+    public string LastName { get; set; } = "";
+    public string StreetName { get; set; } = "";
+    public string CountryName { get; set; } = "";
+    public string PaymentMethodName { get; set; } = "";
     
-    public string? FirstName { get; set; }
-    public string? LastName { get; set; }
-    public string? StreetName { get; set; }
+    public int SelectedCountryId { get; set; }
     
+    public int SelectedPaymentMethodId { get; set; }
     public int SelectedCategoryId { get; set; }
     public int SelectedProductId { get; set; }
     public string NotificationMessage { get; set; }

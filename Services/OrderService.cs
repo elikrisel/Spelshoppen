@@ -10,19 +10,30 @@ public class OrderService
     {
         try
         {
-            // Hämtning av Country och Payment
-            var country = db.Countries.FirstOrDefault() ?? new Country { Name = "Sverige" };
-            var payment = db.PaymentMethods.FirstOrDefault() ?? new PaymentMethod { Name = "Faktura" };
-
-            var customer = db.Customers.FirstOrDefault(c => 
-                c.FirstName == session.FirstName && c.LastName == session.LastName)
-                ?? new Customer { FirstName = session.FirstName, LastName = session.LastName, Street = session.StreetName };
+            // Hämtning av Country och Payment, om det inte finns i databasen så skapas nytt land och payment
+            var country = db.Countries.FirstOrDefault(c => c.Name == session.CountryName);
+            if (country == null)
+            {
+                country = new Country { Name = session.CountryName };
+                db.Countries.Add(country);
+                db.SaveChanges(); 
+            }
+            
+            var payment = db.PaymentMethods.FirstOrDefault(p => p.Name == session.PaymentMethodName);
+            if (payment == null)
+            {
+                payment = new PaymentMethod { Name = session.PaymentMethodName };
+                db.PaymentMethods.Add(payment);
+                db.SaveChanges();
+            }
 
             var city = db.Cities.FirstOrDefault(c => c.Name == session.CityName)
                        ?? new City { Name = session.CityName, Country = country };
 
+            
+
             var order = new Order {
-                Customers = customer,
+                Customers = GetOrCreateCustomer(db, session),
                 Cities = city,
                 PaymentMethods = payment,
                 OrderDate = DateTime.Now,
@@ -57,4 +68,29 @@ public class OrderService
             session.State = MenuState.MainMenu;
         }
     }
+    
+    private static Customer GetOrCreateCustomer(MyDbContext db, UserSession session)
+    {
+        // Försöker hitta en befintlig kund som har samma namn
+        var customer = db.Customers.FirstOrDefault(c => 
+            c.FirstName == session.FirstName && 
+            c.LastName == session.LastName);
+
+        //Skapar en ny om Kunden inte finns
+        if (customer == null)
+        {
+            customer = new Customer 
+            { 
+                FirstName = session.FirstName, 
+                LastName = session.LastName, 
+                Street = session.StreetName 
+            };
+            
+        }
+
+        return customer;
+    }
+    
+    
+    
 }
