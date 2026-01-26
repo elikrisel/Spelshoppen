@@ -5,14 +5,27 @@ namespace Spelshoppen;
 public class AdminService
 {
     public static void AddProduct(MyDbContext db, string title, string desc, decimal price, int stock, int catId,
-        int suppId, string condition)
+        List<int> genreIds,int suppId, string condition)
     {
         var newProduct = new Product
         {
             Title = title,
             Description = desc,
             CategoryId = catId,
+            ProductGenres = new List<ProductGenre>()
         };
+
+        if (genreIds != null && genreIds.Count > 0)
+        {
+            foreach (var gId in genreIds)
+            {
+                newProduct.ProductGenres.Add(new ProductGenre 
+                { 
+                    GenreId = gId 
+                });
+            }
+        }
+        
         var newItem = new ProductItem
         {
             Products = newProduct,

@@ -20,13 +20,13 @@ public class AdminMenu : IMenuPage
             pi.Price,
             pi.UnitsInStock
 
-        }).OrderByDescending(pi => pi.Id) // Visa de nyaste överst
-        .Take(5) // Hämta bara de 10 första för att rymmas på skärmen
+        }).OrderByDescending(pi => pi.Id) 
+        .Take(5) //Visar fem senaste med anledning av att UI Window bråkar när man läser upp allting
         .ToList();
 
         var rows = new List<string>();
         rows.Add($"{"ID",-4} | {"TITEL",-18} | {"UTGIVARE",-15} |  {"PRIS",-8} | {"LAGER"} ");
-        rows.Add(Helpers.ShowXNumberOfLines(40));
+        rows.Add(Helpers.ShowXNumberOfLines(rows.Count));
         foreach (var i in inventory)
         {
             
@@ -58,10 +58,34 @@ public class AdminMenu : IMenuPage
     private static void AddProduct(MyDbContext db, UserSession session)
     {
         Console.SetCursorPosition(0, Lowest.LowestPosition + 2);
-        Console.WriteLine("LÄGG TILL PRODUKT:");
+        
+        //Väljer kategori ID
+        var categorySelect = db.Categories.ToList();
+        Console.WriteLine("Kategorier: " + string.Join(',',categorySelect.Select(c => $"[{c.Id}] {c.Title}")));
+        Console.Write("Välj Kategori ID: ");
+        int.TryParse(Console.ReadLine(), out var categoryId);
         
         
-        Console.Write("Namn på Spelet:");
+        List<int> selectedGenres = new List<int>();
+        
+        //Kollar om Admin väljer spel
+        if (categoryId == 1)
+        {   
+            //Listar upp genres
+            var genres = db.Genres.ToList();
+            Console.WriteLine("Genres: " + string.Join(',', genres.Select(g => $"[{g.Id}] {g.Name}")));
+            Console.Write("Välj Genre IDs: ");
+            string genreInput = Console.ReadLine() ?? "";
+            
+            //Kollar om man skriver mer än en genre ID
+            selectedGenres = genreInput.Split(',')
+                .Select(s => int.TryParse(s.Trim(), out int id) ? id : 0)
+                .Where(id => id > 0).ToList();
+            
+        }
+        
+           
+        Console.Write("Namn på Objektet:");
         string title = Console.ReadLine() ?? "Okänd titel";
         
         Console.Write("Beskrivning: ");
@@ -73,7 +97,7 @@ public class AdminMenu : IMenuPage
         Console.Write("Antal i lager: ");
         int.TryParse(Console.ReadLine(), out var stock);
         
-        Console.Write("Skick?");
+        Console.Write("Skick?: ");
         string condition = Console.ReadLine() ?? "Ny";
         
         //Hämtar första bästa Kategori och Supplier från databasen
@@ -85,7 +109,8 @@ public class AdminMenu : IMenuPage
             session.NotificationMessage = "FELMEDDELANDE: du måste ha minst en kategori och en leverantör i databasen!";
             return;
         }
-        AdminService.AddProduct(db,title,description,price,stock,firstCategory,firstSupplier,condition);
+        AdminService.AddProduct(db,title,description,price,
+            stock,categoryId,selectedGenres,firstSupplier,condition);
         session.NotificationMessage = $"La in titeln: {title}";
 
 
