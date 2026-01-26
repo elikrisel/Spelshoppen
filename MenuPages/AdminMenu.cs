@@ -33,7 +33,7 @@ public class AdminMenu : IMenuPage
         }
 
         rows.Add("");
-        rows.Add("[L] LÄGG TILL   [P] 'ÄNDRA' PRIS   [R] RADERA");
+        rows.Add("[L] LÄGG TILL   [U] 'UPPDATERA' PRODUKT   [R] RADERA");
 
         new UX.Window("ADMIN: LAGERHANTERING", 15, 8, rows).Draw();
         UIRenderer.DrawNotifications(session);
@@ -46,7 +46,8 @@ public class AdminMenu : IMenuPage
             case 'L':
                 AddProduct(db, session);
                 break;
-            case 'P':
+            case 'U':
+                UpdateProduct(db,session);
                 break;
             case 'R':
                 DeleteProduct(db, session);
@@ -56,7 +57,7 @@ public class AdminMenu : IMenuPage
 
     private static void AddProduct(MyDbContext db, UserSession session)
     {
-        Console.SetCursorPosition(0, Lowest.LowestPosition + 2);
+        Helpers.UpdateAndSetCursorPosition();
 
         //Väljer kategori ID
         var categorySelect = db.Categories.ToList();
@@ -113,9 +114,64 @@ public class AdminMenu : IMenuPage
         session.NotificationMessage = $"La in titeln: {title}";
     }
 
+    private void UpdateProduct(MyDbContext db, UserSession session)
+    {
+        Helpers.UpdateAndSetCursorPosition(); 
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.Write("ANGE ID FÖR ATT REDIGERA");
+        Console.ResetColor();
+
+        if (!int.TryParse(Console.ReadLine(), out var id)) return;
+
+            var item = db.ProductItems.Include(pi => pi.Products)
+                .FirstOrDefault(pi => pi.Id == id);
+
+            if (item == null)
+            {
+                session.NotificationMessage = "PRODUKTEN HITTADES INTE!";
+                return;
+            }
+
+            Console.WriteLine($"\nREDIGERAR {item.Products?.Title}");
+            Console.WriteLine("[1] Ändra Titel [2] Ändra Pris [3] Ändra Lager [4] Ändra Skick");
+
+            var choice = Console.ReadKey(true).KeyChar;
+
+            switch (choice)
+            {
+                case '1':
+                    Console.Write("Ny titel: ");
+                    item.Products.Title = Console.ReadLine() ?? item.Products.Title;
+                    break;
+                case '2':
+                    Console.Write("Nytt pris: ");
+                    if(decimal.TryParse(Console.ReadLine(), out var price)) item.Price = price;
+                    break;
+                case '3':
+                    Console.Write("Ändra lagersaldo: ");
+                    if(int.TryParse(Console.ReadLine(), out var stock)) item.UnitsInStock = stock;
+                    break;
+                case '4':
+                    Console.Write($"Ändra skick (Nuvarande: {item.Condition}): ");
+                    string newCondition = Console.ReadLine();
+                    if (!string.IsNullOrWhiteSpace(newCondition)) 
+                    {
+                        item.Condition = newCondition;
+                    }
+                    break;
+                default:
+                    return;
+            }
+
+            db.SaveChanges();
+            session.NotificationMessage = "Ändringen har sparats!";
+
+
+    }
+
     private static void DeleteProduct(MyDbContext db, UserSession session)
     {
-        Console.SetCursorPosition(0, Lowest.LowestPosition + 2);
+        Helpers.UpdateAndSetCursorPosition();
         Console.ForegroundColor = ConsoleColor.Red;
         Console.Write("ANGE ID PÅ PRODUKTEN SOM DU VILL RADERA: ");
         Console.ResetColor();

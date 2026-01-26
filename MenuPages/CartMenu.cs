@@ -26,7 +26,7 @@ public class CartMenu : IMenuPage
                     "",
                     "[+] Öka antal",
                     "[-] Minska antal",
-                    "[D] Ta bort från korg",
+                    "[D] Ta bort från korg", //ÄNDRA I SAMBAND MED CRUD?
                     "[B] Gå tillbaka"
                 };
                 new UX.Window("ÄNDRA ANTAL", 15, 8, editDetails).Draw();
