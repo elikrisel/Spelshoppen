@@ -10,18 +10,18 @@ public class CategoryMenu : IMenuPage
         UIRenderer.DrawBaseLayout(session);
         DrawWindows(db, session);
         UIRenderer.DrawNotifications(session);
-        UIRenderer.DrawPrompts(session);
+        UIRenderer.DrawCategoryPrompts(session);
     }
 
     public void HandleInput(ConsoleKeyInfo key, char input, MyDbContext db, UserSession session)
     {
-        //Hantera ID val
+        
         if (char.IsDigit(input))
         {
             ProcessIdInput(input, session, db);
         }
 
-        // Hantera Köp (Enter)
+        
         if (key.Key == ConsoleKey.Enter && session.SelectedProductId != 0)
         {
             HandlePurchase(db, session);
@@ -32,7 +32,7 @@ public class CategoryMenu : IMenuPage
     {
         int id = InputHandler.PromptForId(input);
 
-        // Steg 1: Välj Kategori
+        
         if (session.SelectedCategoryId == 0)
         {
             if (!db.Categories.Any(c => c.Id == id))
@@ -45,7 +45,7 @@ public class CategoryMenu : IMenuPage
             return;
         }
 
-        // Steg 2: Välj Produkt
+        
         if (!db.Products.Any(p => p.Id == id && p.CategoryId == session.SelectedCategoryId))
         {
             session.NotificationMessage = $"Produkt {id} finns inte i denna kategori!";
@@ -58,20 +58,33 @@ public class CategoryMenu : IMenuPage
     private void HandlePurchase(MyDbContext db, UserSession session)
     {
         var item = StoreServices.GetPurchasableItem(db, session.SelectedProductId);
-        
+    
         if (item != null)
         {
-            item.UnitsInStock--;
             
-            //db.SaveChanges();
-            session.Cart.Add(item);
-            session.NotificationMessage = $"{item.Products?.Title} reserverad och inlagd i varukorgen!";
-            session.SelectedProductId = 0;
+            item.UnitsInStock--;
+        
+            //Kolla om varan redan finns i Dictionary
+            var existingKey = session.CartItem.Keys.FirstOrDefault(k => k.Id == item.Id);
+            
+            //Kollar om varan finns i varukorgen eller inte
+            if (existingKey != null)
+            {
+                
+                session.CartItem[existingKey]++;
+            }
+            else
+            {
+                
+                session.CartItem.Add(item, 1);
+            }
 
+            session.NotificationMessage = $"{item.Products?.Title} tillagd i korgen!";
+            session.SelectedProductId = 0; 
         }
         else
         {
-            session.NotificationMessage = $"Varan är tyvärr slut och finns inte i lagret.";
+            session.NotificationMessage = "Varan är tyvärr slut i lager.";
             session.SelectedProductId = 0;
         }
         

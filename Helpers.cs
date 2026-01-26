@@ -1,5 +1,6 @@
 namespace Spelshoppen;
 
+//TODO: Flytta mer saker till Helpers
 public class Helpers
 {
     public static void ShowDebugInfo(MenuState state) => Console.Write($"Nuvarande State: {state}");

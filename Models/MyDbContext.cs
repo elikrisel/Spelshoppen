@@ -27,12 +27,6 @@ public class MyDbContext : DbContext
         modelBuilder.Entity<ProductGenre>().HasKey(pg => new { pg.GenreId, pg.ProductId });
         //Sätter precision för priset
         modelBuilder.Entity<ProductItem>().Property(p => p.Price).HasPrecision(18, 2);
-        modelBuilder.Entity<Country>().HasData(
-            new Country { Id = 1, Name = "Sverige" }
-        );
-        modelBuilder.Entity<PaymentMethod>().HasData(
-            new PaymentMethod { Id = 1, Name = "Faktura" }
-        );
         
     }
     

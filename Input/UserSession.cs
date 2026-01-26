@@ -1,12 +1,12 @@
+using Spelshoppen.MenuPages;
 using Spelshoppen.Models;
-using Spelshoppen.Transactions;
 
 namespace Spelshoppen;
 
 public class UserSession
 {
     public MenuState State { get; set; } = MenuState.MainMenu;
-    public int CheckoutStep { get; set; }
+    public CheckoutState Status { get; set; } = CheckoutState.ReviewingCart;
     
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
@@ -16,9 +16,10 @@ public class UserSession
     public int SelectedProductId { get; set; }
     public string NotificationMessage { get; set; }
     public string? CityName { get; set; }
-    public List<ProductItem> Cart { get; set; } = new();
+    public Dictionary<ProductItem, int> CartItem { get; set; } = new();
     
-    //Steptracker 
+    //Steptracker för CategoryMenu 
+    //TODO: STEPTRACKER IN CARTMENU?
     public int CurrentStep
     {
         get
@@ -38,7 +39,6 @@ public class UserSession
     {
         SelectedCategoryId = 0;
         SelectedProductId = 0;
-        CheckoutStep = 0;
         
     }
 }

@@ -3,6 +3,7 @@ using Spelshoppen.UX;
 
 namespace Spelshoppen.MenuPages;
 
+//TODO: Fix Quit State
 public class QuitMenu : IMenuPage
 {
     public void Draw(MyDbContext db, UserSession session)

@@ -9,16 +9,16 @@ public class MainMenu : IMenuPage
     {
         UIRenderer.DrawBaseLayout(session);
         
-        // 3. Välkomstfönstret
         new UX.Window("Välkommen!", 25, 6, new List<string> { 
             "Välkommen till Spelshoppen!",
             "Använd menyknapparna till vänster för att navigera."
         }).Draw();
         
     }
-
+    
+    //TODO: Fylla i sen
     public void HandleInput(ConsoleKeyInfo key, char input, MyDbContext db, UserSession session)
     {
-        //Fylla i sen
+        
     }
 }

@@ -28,7 +28,7 @@ public class InputHandler
         { MenuState.Quit, "[Q] Quit" }
     };
     
-    
+    //Keybindings 
     private static readonly Dictionary<char, MenuState> KeyBindings = new()
     {
         { 'S', MenuState.MainMenu },
@@ -47,7 +47,7 @@ public class InputHandler
         { MenuState.AdminMenu, new AdminMenu() },
         { MenuState.Quit, new QuitMenu() }
     };
-
+    
     public static void HandleInput(ConsoleKeyInfo key, UserSession session, MyDbContext db)
     {
         char input = char.ToUpper(key.KeyChar);

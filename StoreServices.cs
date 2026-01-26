@@ -20,4 +20,5 @@ public class StoreServices
         db.ProductItems
             .Include(pi => pi.Products)
             .FirstOrDefault(pi => pi.ProductId == productId && pi.UnitsInStock > 0);
+    
 }

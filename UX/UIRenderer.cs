@@ -15,7 +15,7 @@ public class UIRenderer
         // Varukorg
         Console.ForegroundColor = ConsoleColor.Green;
         Console.SetCursorPosition(80, 2);
-        Console.Write($"Varukorg: {session.Cart.Count} stycken");
+        Console.Write($"Varukorg: {session.CartItem.Count} stycken");
         Console.ResetColor();
 
         // Toppfönster
@@ -42,7 +42,7 @@ public class UIRenderer
     }
     
     //TODO: Flytta över den här till varje meny
-    public static void DrawPrompts(UserSession session)
+    public static void DrawCategoryPrompts(UserSession session)
     {
         string[] prompts = 
         {
