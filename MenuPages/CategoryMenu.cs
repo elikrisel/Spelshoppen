@@ -21,17 +21,18 @@ public class CategoryMenu : IMenuPage
             ProcessIdInput(input, session, db);
         }
 
-        
+        //När användaren är på ProduktInformationen och Trycker på Enter så köper de varan.
         if (key.Key == ConsoleKey.Enter && session.SelectedProductId != 0)
         {
-            HandlePurchase(db, session);
+            var item = StoreServices.GetPurchasableItem(db,session.SelectedProductId);
+            if (item != null) StoreServices.ExecutePurchase(db, session, item);
+            session.SelectedProductId = 0;
         }
     }
 
     private static void ProcessIdInput(char input, UserSession session, MyDbContext db)
     {
         int id = InputHandler.PromptForId(input);
-
         
         if (session.SelectedCategoryId == 0)
         {
@@ -55,42 +56,6 @@ public class CategoryMenu : IMenuPage
         session.SelectedProductId = id;
     }
 
-    private void HandlePurchase(MyDbContext db, UserSession session)
-    {
-        var item = StoreServices.GetPurchasableItem(db, session.SelectedProductId);
-    
-        if (item != null)
-        {
-            
-            item.UnitsInStock--;
-        
-            //Kolla om varan redan finns i Dictionary
-            var existingKey = session.CartItem.Keys.FirstOrDefault(k => k.Id == item.Id);
-            
-            //Kollar om varan finns i varukorgen eller inte
-            if (existingKey != null)
-            {
-                
-                session.CartItem[existingKey]++;
-            }
-            else
-            {
-                
-                session.CartItem.Add(item, 1);
-            }
-
-            session.NotificationMessage = $"{item.Products?.Title} tillagd i korgen!";
-            session.SelectedProductId = 0; 
-        }
-        else
-        {
-            session.NotificationMessage = "Varan är tyvärr slut i lager.";
-            session.SelectedProductId = 0;
-        }
-        
-        
-    }
-
     private static void DrawWindows(MyDbContext db, UserSession session)
     {
         DrawCategoryMenu(db);
@@ -103,14 +68,14 @@ public class CategoryMenu : IMenuPage
     private static void DrawCategoryMenu(MyDbContext db)
     {
         var categories = db.Categories.Select(c => $"[{c.Id}] {c.Title}").ToList();
-        new UX.Window("Kategorier", 10, 8, categories).Draw();
+        new UX.Window("KATEGORIER", 10, 8, categories).Draw();
     }
 
     private static void DrawProductWindow(MyDbContext db, int categoryId)
     {
         var products = db.Products.Where(p => p.CategoryId == categoryId)
             .Select(p => $"[{p.Id}] {p.Title}").ToList();
-        new UX.Window("Produkter", 30, 8, products).Draw();
+        new UX.Window("PRODUKTER", 30, 8, products).Draw();
     }
 
     private static void DrawProductDetailsWindow(MyDbContext db, int productId)
