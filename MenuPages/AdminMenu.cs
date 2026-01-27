@@ -4,7 +4,6 @@ using Spelshoppen.UX;
 
 namespace Spelshoppen.MenuPages;
 
-//TODO: FIX ADMIN MENU
 public class AdminMenu : IMenuPage
 {
     public void DrawMenuPage(MyDbContext db, UserSession session)
@@ -48,14 +47,14 @@ public class AdminMenu : IMenuPage
                 AddProduct(db, session);
                 break;
             case 'U':
-                
+
                 Console.Write("SKRIV ID SOM DU VILL UPPDATERA: ");
                 targetId = InputHandler.PromptForId(Console.ReadKey(true).KeyChar);
-                UpdateProduct(db,session,targetId);
+                UpdateProduct(db, session, targetId);
                 break;
             case 'R':
                 targetId = InputHandler.GetAdminIdInput("SKRIV ID SOM DU VILL TA BORT: ");
-                DeleteProduct(db, session,targetId);
+                DeleteProduct(db, session, targetId);
                 break;
         }
     }
@@ -69,7 +68,7 @@ public class AdminMenu : IMenuPage
         Console.WriteLine("Kategorier: " + string.Join(',', categorySelect.Select(c => $"[{c.Id}] {c.Title}")));
         string categoryIdInput = Helpers.Prompt("Välj Kategori ID: ");
         int.TryParse(categoryIdInput, out var categoryId);
-    
+
 
         List<int> selectedGenres = new List<int>();
 
@@ -79,36 +78,35 @@ public class AdminMenu : IMenuPage
             //Listar upp genres
             var genres = db.Genres.ToList();
             Console.WriteLine("Genres: " + string.Join(',', genres.Select(g => $"[{g.Id}] {g.Name}")));
-            
+
             //Kollar om man skriver mer än en genre ID
             string genreIdInput = Helpers.Prompt("Välj Genre IDs [SEPARERA MED ',' VID FLER VAL]: ");
-            
+
             //string genreInput = Console.ReadLine() ?? "";
             // selectedGenres = genreInput.Split(',')
             //     .Select(s => int.TryParse(s.Trim(), out int id) ? id : 0)
             //     .Where(id => id > 0).ToList();
-             selectedGenres = genreIdInput.Split(',')
-                 .Select(s => int.TryParse(s.Trim(), out int id) ? id : 0)
-                 .Where(id => id > 0).ToList();
-            
+            selectedGenres = genreIdInput.Split(',')
+                .Select(s => int.TryParse(s.Trim(), out int id) ? id : 0)
+                .Where(id => id > 0).ToList();
         }
 
         string titleInput = Helpers.Prompt("Namn på Objektet: ");
-        
+
         //Console.Write("Namn på Objektet:");
         //string title = Console.ReadLine() ?? "Okänd titel";
-        
+
         string descriptionInput = Helpers.Prompt("Beskrivning: ");
-        
+
         //Console.Write("Beskrivning: ");
         //string description = Console.ReadLine() ?? "";
 
         decimal priceInput = decimal.Parse(Helpers.Prompt("Pris: "));
-        
+
         //Console.Write("Pris: ");
         //decimal.TryParse(Console.ReadLine(), out var price);
-        
-        
+
+
         int stockInput = int.Parse(Helpers.Prompt("Antal i lager: "));
         //Console.Write("Antal i lager: ");
         //int.TryParse(priceInput, out var stock);
@@ -132,86 +130,82 @@ public class AdminMenu : IMenuPage
         session.NotificationMessage = $"La in titeln: {titleInput}";
     }
 
-    private void UpdateProduct(MyDbContext db, UserSession session,int id)
+    private void UpdateProduct(MyDbContext db, UserSession session, int id)
     {
-        
-            var item = db.ProductItems.Include(pi => pi.Products)
-                .FirstOrDefault(pi => pi.Id == id);
+        var item = db.ProductItems.Include(pi => pi.Products)
+            .FirstOrDefault(pi => pi.Id == id);
 
-            if (item == null)
-            {
-                session.NotificationMessage = $"ID {id} HITTADES INTE!";
+        if (item == null)
+        {
+            session.NotificationMessage = $"ID {id} HITTADES INTE!";
+            return;
+        }
+
+        Console.WriteLine($"\nREDIGERAR [{id}] {item.Products?.Title}");
+        Console.WriteLine("[1] Ändra Titel [2] Ändra Pris [3] Ändra Lager [4] Ändra Skick [5] Avbryt");
+
+        var choice = Console.ReadKey(true).KeyChar;
+
+        switch (choice)
+        {
+            case '1':
+                item.Products.Title = Helpers.Prompt("Ny titel: ");
+                //Console.Write("Ny titel: ");
+                //item.Products.Title = Console.ReadLine() ?? item.Products.Title;
+                break;
+            case '2':
+                if (decimal.TryParse(Helpers.Prompt("Nytt pris: "), out var price))
+                    item.Price = price;
+                //Console.Write("Nytt pris: ");
+                //if(decimal.TryParse(Console.ReadLine(), out var price)) item.Price = price;
+                break;
+            case '3':
+                if (int.TryParse(Helpers.Prompt("Ändra lagersaldo: "), out var stock))
+                    item.UnitsInStock = stock;
+                //Console.Write("Ändra lagersaldo: ");
+                //if(int.TryParse(Console.ReadLine(), out var stock)) item.UnitsInStock = stock;
+                break;
+            case '4':
+                string newCondition = Helpers.Prompt($"Ändra skick [Nuvarande Skick: {item.Condition}");
+                //Console.Write($"Ändra skick (Nuvarande: {item.Condition}): ");
+                //string newCondition = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(newCondition))
+                {
+                    item.Condition = newCondition;
+                }
+
+                break;
+            case '5':
+                session.NotificationMessage = "Ändring avbruten.";
+                break;
+            default:
                 return;
-            }
+        }
 
-            Console.WriteLine($"\nREDIGERAR [{id}] {item.Products?.Title}");
-            Console.WriteLine("[1] Ändra Titel [2] Ändra Pris [3] Ändra Lager [4] Ändra Skick [5] Avbryt");
-
-            var choice = Console.ReadKey(true).KeyChar;
-
-            switch (choice)
-            {
-                case '1':
-                    item.Products.Title = Helpers.Prompt("Ny titel: ");
-                    //Console.Write("Ny titel: ");
-                    //item.Products.Title = Console.ReadLine() ?? item.Products.Title;
-                    break;
-                case '2':
-                    if(decimal.TryParse(Helpers.Prompt("Nytt pris: "), out var price))
-                        item.Price = price;
-                    //Console.Write("Nytt pris: ");
-                    //if(decimal.TryParse(Console.ReadLine(), out var price)) item.Price = price;
-                    break;
-                case '3':
-                    if(int.TryParse(Helpers.Prompt("Ändra lagersaldo: "), out var stock))
-                        item.UnitsInStock = stock;
-                        //Console.Write("Ändra lagersaldo: ");
-                    //if(int.TryParse(Console.ReadLine(), out var stock)) item.UnitsInStock = stock;
-                    break;
-                case '4':
-                    string newCondition = Helpers.Prompt($"Ändra skick [Nuvarande Skick: {item.Condition}");
-                    //Console.Write($"Ändra skick (Nuvarande: {item.Condition}): ");
-                    //string newCondition = Console.ReadLine();
-                    if (!string.IsNullOrWhiteSpace(newCondition)) 
-                    {
-                        item.Condition = newCondition;
-                    }
-                    break;
-                case '5':
-                    session.NotificationMessage = "Ändring avbruten.";
-                    break;
-                default:
-                    return;
-            }
-
-            db.SaveChanges();
-            session.NotificationMessage = "Ändringen har sparats!";
-
-
+        db.SaveChanges();
+        session.NotificationMessage = "Ändringen har sparats!";
     }
 
     private static void DeleteProduct(MyDbContext db, UserSession session, int id)
     {
-        
-            var product = db.ProductItems
-                .Include(pi => pi.Products)
-                .FirstOrDefault(pi => pi.Id == id);
+        var product = db.ProductItems
+            .Include(pi => pi.Products)
+            .FirstOrDefault(pi => pi.Id == id);
 
-            if (product == null) return;
-            
-            //Skriver ut titeln beroende på vilket ID jag har valt
-            string title = product.Products?.Title ?? "Okänd titel";
-            string confirmation = Helpers.Prompt($"Är du säker på att du vill ta bort {title}? [Skriv 'J' för JA]");         
-            //Console.Write($"Är du säker på att du vill ta bort {title}?");
-            if (confirmation.ToUpper() == "J")
-            {
-                bool success = AdminService.DeleteProduct(db, id);
-                session.NotificationMessage = success ? $"ID {title} har raderats" : $"Hittade inte ID";
-            }
-            else
-            {
-                session.NotificationMessage = $"Avbryter radering";
-            }
-        
+        if (product == null) return;
+
+        //Skriver ut titeln beroende på vilket ID jag har valt
+        string title = product.Products?.Title ?? "Okänd titel";
+        string confirmation = Helpers.Prompt($"Är du säker på att du vill ta bort {title}? [Skriv 'J' för JA]");
+        //Console.Write($"Är du säker på att du vill ta bort {title}?");
+        if (confirmation.ToUpper() == "J")
+        {
+            bool success = AdminService.DeleteProduct(db, id);
+            session.NotificationMessage = success ? $"ID {title} har raderats" : $"Hittade inte ID";
+        }
+        else
+        {
+            session.NotificationMessage = $"Avbryter radering";
+        }
     }
 }
