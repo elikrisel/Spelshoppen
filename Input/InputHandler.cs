@@ -6,12 +6,17 @@ namespace Spelshoppen;
 
 public class InputHandler
 {
-    //ID Input, tillåter dig att skriva mer än ensiffrigt
+    //ID Input, I det här fallet har jag möjlighet att skriva tvåsiffrigt för att få tag på 9+
     public static int PromptForId(char firstDigit)
     {
         Console.Write(firstDigit);
-        string? rest = Console.ReadLine();
-        return int.TryParse(firstDigit + rest, out int id) ? id : 0;
+        string? restOfInput = Console.ReadLine();
+        if (int.TryParse(firstDigit + restOfInput, out int id))
+        {
+            return id;
+        }
+
+        return 0;
     }
 
     public static int GetAdminIdInput(string message)
@@ -32,7 +37,7 @@ public class InputHandler
         { MenuState.Quit, "[Q] Quit" }
     };
     
-    //Keybindings 
+    //Keybindings till menyerna
     private static readonly Dictionary<char, MenuState> KeyBindings = new()
     {
         { 'S', MenuState.MainMenu },
@@ -68,7 +73,7 @@ public class InputHandler
         //Skickar oss till nästa sida i state
         if (Pages.TryGetValue(session.State, out var currentPage))
         {
-            currentPage.HandleInput(key, input, db, session);
+            currentPage.PageInput(key, input, db, session);
             if (session.State == MenuState.MainMenu && key.Key == ConsoleKey.Enter)
             {
                 while (Console.KeyAvailable) Console.ReadKey(true);

@@ -5,7 +5,7 @@ namespace Spelshoppen.MenuPages;
 
 public class MainMenu : IMenuPage
 {
-    public void Draw(MyDbContext db, UserSession session)
+    public void DrawMenuPage(MyDbContext db, UserSession session)
     {
         UIRenderer.DrawBaseLayout(session);
         
@@ -17,7 +17,7 @@ public class MainMenu : IMenuPage
     }
     
     //TODO: Fylla i sen
-    public void HandleInput(ConsoleKeyInfo key, char input, MyDbContext db, UserSession session)
+    public void PageInput(ConsoleKeyInfo key, char input, MyDbContext db, UserSession session)
     {
         
     }

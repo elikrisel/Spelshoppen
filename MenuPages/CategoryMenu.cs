@@ -5,7 +5,7 @@ namespace Spelshoppen.UX;
 
 public class CategoryMenu : IMenuPage
 {
-    public void Draw(MyDbContext db, UserSession session)
+    public void DrawMenuPage(MyDbContext db, UserSession session)
     {
         UIRenderer.DrawBaseLayout(session);
         DrawWindows(db, session);
@@ -13,7 +13,7 @@ public class CategoryMenu : IMenuPage
         UIRenderer.DrawCategoryPrompts(session);
     }
 
-    public void HandleInput(ConsoleKeyInfo key, char input, MyDbContext db, UserSession session)
+    public void PageInput(ConsoleKeyInfo key, char input, MyDbContext db, UserSession session)
     {
         
         if (char.IsDigit(input))

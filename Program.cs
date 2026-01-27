@@ -37,7 +37,7 @@ class Program
                  if (InputHandler.Pages.TryGetValue(session.State, out var currentPage))
                  {
                      //Ritar upp för varje state
-                     currentPage.Draw(db, session);
+                     currentPage.DrawMenuPage(db, session);
                      
                  }
                  

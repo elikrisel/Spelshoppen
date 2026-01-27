@@ -7,7 +7,7 @@ namespace Spelshoppen.MenuPages;
 
 public class CartMenu : IMenuPage
 {
-    public void Draw(MyDbContext db, UserSession session)
+    public void DrawMenuPage(MyDbContext db, UserSession session)
     {
         UIRenderer.DrawBaseLayout(session);
 
@@ -45,7 +45,7 @@ public class CartMenu : IMenuPage
         var rows = session.CartItem.Select(kvp =>
             $"[{kvp.Key.Id}] {kvp.Key.Products?.Title,-15} {kvp.Value}st x {kvp.Key.Price,6} kr").ToList();
         
-        rows.Add(Helpers.ShowXNumberOfLines(35));
+        rows.Add(Helpers.PrintXNumberOfLines(35));
         decimal total = session.CartItem.Sum(kvp => kvp.Key.Price * kvp.Value);
         rows.Add($"TOTALT: {total} kr");
         rows.Add("");
@@ -55,7 +55,7 @@ public class CartMenu : IMenuPage
         new UX.Window("DIN VARUKORG", 15, 8, rows).Draw();
     }
     
-    public void HandleInput(ConsoleKeyInfo key, char input, MyDbContext db, UserSession session)
+    public void PageInput(ConsoleKeyInfo key, char input, MyDbContext db, UserSession session)
     {
         switch (session.Status)
         {

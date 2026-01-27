@@ -5,9 +5,32 @@ namespace Spelshoppen;
 //TODO: Flytta mer saker till Helpers
 public class Helpers
 {
-    public static void ShowDebugInfo(MenuState state) => Console.Write($"Nuvarande State: {state}");
-    public static string ShowXNumberOfLines(int number) => new('-', number);
+    //Kollar vilket state jag är i under programmets gång
+    public static void ShowDebugInfo(MenuState state)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.Write($"Nuvarande State: {state}");
+        Console.ResetColor();
+    }
 
+    public static void ShowDebugInCategorySelection(UserSession session)
+    {
+        Console.SetCursorPosition(0, 28);
+        Console.Write($"Nuvarande selection. CategoryId: {session.SelectedCategoryId} | ProductId: {session.SelectedProductId}");
+    }
+
+    public static void ShowCart(UserSession session)
+    {
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.SetCursorPosition(80, 2);
+        Console.Write($"Varukorg: {session.CartItem.Count} stycken");
+        Console.ResetColor();
+    }
+    
+    //Printar x linjer enligt användaren
+    public static string PrintXNumberOfLines(int number) => new('-', number);
+
+    //Sätter ny cursor position och flyttar ner ytterligare rader
     public static void UpdateAndSetCursorPosition()
     {
         int newCursorPosition = Lowest.LowestPosition + 2;

@@ -7,7 +7,7 @@ namespace Spelshoppen.MenuPages;
 //TODO: FIX ADMIN MENU
 public class AdminMenu : IMenuPage
 {
-    public void Draw(MyDbContext db, UserSession session)
+    public void DrawMenuPage(MyDbContext db, UserSession session)
     {
         UIRenderer.DrawBaseLayout(session);
 
@@ -26,7 +26,7 @@ public class AdminMenu : IMenuPage
 
         var rows = new List<string>();
         rows.Add($"{"ID",-4} | {"TITEL",-18} | {"UTGIVARE",-15} |  {"PRIS",-8} | {"LAGER"} ");
-        rows.Add(Helpers.ShowXNumberOfLines(rows.Count));
+        rows.Add(Helpers.PrintXNumberOfLines(rows.Count));
         foreach (var i in inventory)
         {
             rows.Add($"{i.Id,-3} | {i.Title,-18} | {i.Publisher,-12} | {i.Price,6}kr | {i.UnitsInStock,2}st");
@@ -39,7 +39,7 @@ public class AdminMenu : IMenuPage
         UIRenderer.DrawNotifications(session);
     }
 
-    public void HandleInput(ConsoleKeyInfo key, char input, MyDbContext db, UserSession session)
+    public void PageInput(ConsoleKeyInfo key, char input, MyDbContext db, UserSession session)
     {
         int targetId;
         switch (char.ToUpper(input))

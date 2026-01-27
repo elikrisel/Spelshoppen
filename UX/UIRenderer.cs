@@ -10,13 +10,12 @@ public class UIRenderer
         UX.Lowest.LowestPosition = 0;
         
         //Debug Window:
-        Console.ForegroundColor = ConsoleColor.Red;
         Helpers.ShowDebugInfo(session.State);
         // Varukorg
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.SetCursorPosition(80, 2);
-        Console.Write($"Varukorg: {session.CartItem.Count} stycken");
-        Console.ResetColor();
+        Helpers.ShowCart(session);
+        //Trackar Kategori val
+        Helpers.ShowDebugInCategorySelection(session);
+        
 
         // Toppfönster
         new UX.Window("", 45, 1, new List<string> { "# Spelshoppen #", "Finns nu i Konsol app!" }).Draw();
@@ -34,9 +33,9 @@ public class UIRenderer
 
         Console.SetCursorPosition(0, Lowest.LowestPosition + 2);
         Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine(Helpers.ShowXNumberOfLines(60));
+        Console.WriteLine(Helpers.PrintXNumberOfLines(60));
         Console.WriteLine($" NOTIS: {session.NotificationMessage}");
-        Console.WriteLine(Helpers.ShowXNumberOfLines(60));
+        Console.WriteLine(Helpers.PrintXNumberOfLines(60));
         Console.ResetColor();
 
     }
