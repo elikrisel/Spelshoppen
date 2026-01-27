@@ -135,10 +135,10 @@ public class CartMenu : IMenuPage
 
         try
         {
-            session.FirstName = Prompt("Förnamn: ");
-            session.LastName = Prompt("Efternamn: ");
-            session.StreetName = Prompt("Gatuadress: ");
-            session.CityName = Prompt("Stad: ");
+            session.FirstName = Helpers.Prompt("Förnamn: ");
+            session.LastName = Helpers.Prompt("Efternamn: ");
+            session.StreetName = Helpers.Prompt("Gatuadress: ");
+            session.CityName = Helpers.Prompt("Stad: ");
             
             //Är Tvungen att inkludera Countries och Payment på grund av hur jag hade satt upp i min databas
             var countries = db.Countries.ToList();
@@ -175,11 +175,5 @@ public class CartMenu : IMenuPage
     }
 
     
-    private string Prompt(string message)
-    {
-        Console.Write(message);
-        string input = Console.ReadLine() ?? "";
-        if (string.IsNullOrWhiteSpace(input)) throw new Exception("Tom inmatning");
-        return input;
-    }
+
 }

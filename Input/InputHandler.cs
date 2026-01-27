@@ -30,20 +30,22 @@ public class InputHandler
     //String Labels till Menyn
     public static readonly Dictionary<MenuState, string> MenuLabel = new()
     {
-        { MenuState.MainMenu, "[S] Startsida" },
+        { MenuState.MainMenu, "[M] Startsida" },
         { MenuState.CategoryMenu, "[K] Kategorier" },
-        { MenuState.AdminMenu, "[A] Admin" },
         { MenuState.CartMenu, "[C] Varukorgen" },
+        { MenuState.AdminMenu, "[A] Admin" },
+        { MenuState.SearchMenu, "[S] Sök"},
         { MenuState.Quit, "[Q] Quit" }
     };
     
     //Keybindings till menyerna
     private static readonly Dictionary<char, MenuState> KeyBindings = new()
     {
-        { 'S', MenuState.MainMenu },
+        { 'M', MenuState.MainMenu },
         { 'K', MenuState.CategoryMenu },
-        { 'A', MenuState.AdminMenu },
         { 'C', MenuState.CartMenu },
+        { 'A', MenuState.AdminMenu },
+        { 'S', MenuState.SearchMenu },
         { 'Q', MenuState.Quit },
     };
     
@@ -54,6 +56,7 @@ public class InputHandler
         { MenuState.CategoryMenu, new CategoryMenu() },
         { MenuState.CartMenu, new CartMenu() },
         { MenuState.AdminMenu, new AdminMenu() },
+        {MenuState.SearchMenu, new SearchMenu() },
         { MenuState.Quit, new QuitMenu() }
     };
     

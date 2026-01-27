@@ -6,5 +6,6 @@ public enum MenuState
     CategoryMenu,
     CartMenu,
     AdminMenu,
+    SearchMenu,
     Quit
 }

@@ -44,5 +44,14 @@ public class Helpers
         Console.SetCursorPosition(0, newCursorPosition);
         
     }
+    public static string Prompt(string message)
+    {
+        Console.CursorVisible = true;
+        Console.Write(message);
+        string input = Console.ReadLine() ?? "";
+        Console.CursorVisible = false;
+        if (string.IsNullOrWhiteSpace(input)) throw new Exception("Tom inmatning");
+        return input;
+    }
     
 }
