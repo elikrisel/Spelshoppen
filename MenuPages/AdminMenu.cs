@@ -67,9 +67,9 @@ public class AdminMenu : IMenuPage
         //Väljer kategori ID
         var categorySelect = db.Categories.ToList();
         Console.WriteLine("Kategorier: " + string.Join(',', categorySelect.Select(c => $"[{c.Id}] {c.Title}")));
-        Console.Write("Välj Kategori ID: ");
-        int.TryParse(Console.ReadLine(), out var categoryId);
-
+        string categoryIdInput = Helpers.Prompt("Välj Kategori ID: ");
+        int.TryParse(categoryIdInput, out var categoryId);
+    
 
         List<int> selectedGenres = new List<int>();
 
@@ -79,30 +79,43 @@ public class AdminMenu : IMenuPage
             //Listar upp genres
             var genres = db.Genres.ToList();
             Console.WriteLine("Genres: " + string.Join(',', genres.Select(g => $"[{g.Id}] {g.Name}")));
-            Console.Write("Välj Genre IDs: ");
-            string genreInput = Console.ReadLine() ?? "";
-
+            
             //Kollar om man skriver mer än en genre ID
-            selectedGenres = genreInput.Split(',')
-                .Select(s => int.TryParse(s.Trim(), out int id) ? id : 0)
-                .Where(id => id > 0).ToList();
+            string genreIdInput = Helpers.Prompt("Välj Genre IDs [SEPARERA MED ',' VID FLER VAL]: ");
+            
+            //string genreInput = Console.ReadLine() ?? "";
+            // selectedGenres = genreInput.Split(',')
+            //     .Select(s => int.TryParse(s.Trim(), out int id) ? id : 0)
+            //     .Where(id => id > 0).ToList();
+             selectedGenres = genreIdInput.Split(',')
+                 .Select(s => int.TryParse(s.Trim(), out int id) ? id : 0)
+                 .Where(id => id > 0).ToList();
+            
         }
 
+        string titleInput = Helpers.Prompt("Namn på Objektet: ");
+        
+        //Console.Write("Namn på Objektet:");
+        //string title = Console.ReadLine() ?? "Okänd titel";
+        
+        string descriptionInput = Helpers.Prompt("Beskrivning: ");
+        
+        //Console.Write("Beskrivning: ");
+        //string description = Console.ReadLine() ?? "";
 
-        Console.Write("Namn på Objektet:");
-        string title = Console.ReadLine() ?? "Okänd titel";
+        decimal priceInput = decimal.Parse(Helpers.Prompt("Pris: "));
+        
+        //Console.Write("Pris: ");
+        //decimal.TryParse(Console.ReadLine(), out var price);
+        
+        
+        int stockInput = int.Parse(Helpers.Prompt("Antal i lager: "));
+        //Console.Write("Antal i lager: ");
+        //int.TryParse(priceInput, out var stock);
 
-        Console.Write("Beskrivning: ");
-        string description = Console.ReadLine() ?? "";
-
-        Console.Write("Pris: ");
-        decimal.TryParse(Console.ReadLine(), out var price);
-
-        Console.Write("Antal i lager: ");
-        int.TryParse(Console.ReadLine(), out var stock);
-
-        Console.Write("Skick?: ");
-        string condition = Console.ReadLine() ?? "Ny";
+        string conditionInput = Helpers.Prompt("Skick?: ");
+        //Console.Write("Skick?: ");
+        //string condition = Console.ReadLine() ?? "Ny";
 
         //Hämtar första bästa Kategori och Supplier från databasen
         var firstCategory = db.Categories.Select(c => c.Id).FirstOrDefault();
@@ -114,9 +127,9 @@ public class AdminMenu : IMenuPage
             return;
         }
 
-        AdminService.AddProduct(db, title, description, price,
-            stock, categoryId, selectedGenres, firstSupplier, condition);
-        session.NotificationMessage = $"La in titeln: {title}";
+        AdminService.AddProduct(db, titleInput, descriptionInput, priceInput,
+            stockInput, categoryId, selectedGenres, firstSupplier, conditionInput);
+        session.NotificationMessage = $"La in titeln: {titleInput}";
     }
 
     private void UpdateProduct(MyDbContext db, UserSession session,int id)
@@ -139,20 +152,26 @@ public class AdminMenu : IMenuPage
             switch (choice)
             {
                 case '1':
-                    Console.Write("Ny titel: ");
-                    item.Products.Title = Console.ReadLine() ?? item.Products.Title;
+                    item.Products.Title = Helpers.Prompt("Ny titel: ");
+                    //Console.Write("Ny titel: ");
+                    //item.Products.Title = Console.ReadLine() ?? item.Products.Title;
                     break;
                 case '2':
-                    Console.Write("Nytt pris: ");
-                    if(decimal.TryParse(Console.ReadLine(), out var price)) item.Price = price;
+                    if(decimal.TryParse(Helpers.Prompt("Nytt pris: "), out var price))
+                        item.Price = price;
+                    //Console.Write("Nytt pris: ");
+                    //if(decimal.TryParse(Console.ReadLine(), out var price)) item.Price = price;
                     break;
                 case '3':
-                    Console.Write("Ändra lagersaldo: ");
-                    if(int.TryParse(Console.ReadLine(), out var stock)) item.UnitsInStock = stock;
+                    if(int.TryParse(Helpers.Prompt("Ändra lagersaldo: "), out var stock))
+                        item.UnitsInStock = stock;
+                        //Console.Write("Ändra lagersaldo: ");
+                    //if(int.TryParse(Console.ReadLine(), out var stock)) item.UnitsInStock = stock;
                     break;
                 case '4':
-                    Console.Write($"Ändra skick (Nuvarande: {item.Condition}): ");
-                    string newCondition = Console.ReadLine();
+                    string newCondition = Helpers.Prompt($"Ändra skick [Nuvarande Skick: {item.Condition}");
+                    //Console.Write($"Ändra skick (Nuvarande: {item.Condition}): ");
+                    //string newCondition = Console.ReadLine();
                     if (!string.IsNullOrWhiteSpace(newCondition)) 
                     {
                         item.Condition = newCondition;
@@ -182,9 +201,9 @@ public class AdminMenu : IMenuPage
             
             //Skriver ut titeln beroende på vilket ID jag har valt
             string title = product.Products?.Title ?? "Okänd titel";
-            Console.Write($"Är du säker på att du vill ta bort {title}?");
-            
-            if (char.ToUpper(Console.ReadKey().KeyChar) == 'J')
+            string confirmation = Helpers.Prompt($"Är du säker på att du vill ta bort {title}? [Skriv 'J' för JA]");         
+            //Console.Write($"Är du säker på att du vill ta bort {title}?");
+            if (confirmation.ToUpper() == "J")
             {
                 bool success = AdminService.DeleteProduct(db, id);
                 session.NotificationMessage = success ? $"ID {title} har raderats" : $"Hittade inte ID";

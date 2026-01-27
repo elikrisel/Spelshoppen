@@ -5,9 +5,12 @@ namespace Spelshoppen;
 
 public class UserSession
 {
+    #region States
     public MenuState State { get; set; } = MenuState.MainMenu;
     public CheckoutState Status { get; set; } = CheckoutState.ReviewingCart;
-
+    #endregion    
+    
+    #region CartMenu and Order properties
     public string FirstName { get; set; } = "";
     public string LastName { get; set; } = "";
     public string StreetName { get; set; } = "";
@@ -15,13 +18,23 @@ public class UserSession
     public string PaymentMethodName { get; set; } = "";
     
     public int SelectedCountryId { get; set; }
-    
     public int SelectedPaymentMethodId { get; set; }
+    public string? CityName { get; set; }
+    #endregion
+    
+    #region Category properties
     public int SelectedCategoryId { get; set; }
     public int SelectedProductId { get; set; }
-    public string NotificationMessage { get; set; }
-    public string? CityName { get; set; }
+    #endregion
+    
+    #region Search Properties
+
+    public List<ProductSearchResult> SearchResults { get; set; } = new();
+    public string CurrentSearchterm { get; set; }
+    #endregion
     public Dictionary<ProductItem, int> CartItem { get; set; } = new();
+
+    public string NotificationMessage { get; set; }
     
     //Steptracker för CategoryMenu 
     //TODO: STEPTRACKER IN CARTMENU?
@@ -46,4 +59,11 @@ public class UserSession
         SelectedProductId = 0;
         
     }
+
+    public void ClearSearch()
+    {
+        CurrentSearchterm = "";
+        SearchResults.Clear();
+    }
+    
 }

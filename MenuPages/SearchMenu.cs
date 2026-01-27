@@ -5,8 +5,7 @@ namespace Spelshoppen.MenuPages;
 
 public class SearchMenu : IMenuPage
 {
-    private string currentSearchTerm;
-    private List<ProductSearchResult> searchResults = new List<ProductSearchResult>();
+    
     public void DrawMenuPage(MyDbContext db, UserSession session)
     {
         UIRenderer.DrawBaseLayout(session);
@@ -14,9 +13,10 @@ public class SearchMenu : IMenuPage
         var searchRows = new List<string>();
         searchRows.Add($"{"ID:",-4} | {"TITEL:",-18} | {"PRIS",-10}");
         searchRows.Add(Helpers.PrintXNumberOfLines(40));
-        if (searchResults.Any())
+        
+        if (session.SearchResults.Any())
         {
-            foreach (var item in searchResults)
+            foreach (var item in session.SearchResults)
             {
                 searchRows.Add($"{item.ProductItemId,-4} | {item.Title,-18} | {item.Price,-10}");
             }
@@ -24,7 +24,7 @@ public class SearchMenu : IMenuPage
         else
         {
             searchRows.Add("");
-            searchRows.Add(string.IsNullOrEmpty(currentSearchTerm) ? "Tryck [S] för att starta en sökning" 
+            searchRows.Add(string.IsNullOrEmpty(session.CurrentSearchterm) ? "Tryck [F] för att starta en sökning" 
                 : "Inga träffar, försök igen!");
         }
         searchRows.Add("");
@@ -45,15 +45,16 @@ public class SearchMenu : IMenuPage
 
     private void ExecuteSearch(UserSession session)
     {
+        session.ClearSearch();
         try
         {
             Helpers.UpdateAndSetCursorPosition();
             string searchTerm = Helpers.Prompt("SÖK PRODUKT: ");
-            currentSearchTerm = searchTerm;
-            searchResults = SearchProduct.SearchProducts(searchTerm);
-            if (searchResults.Count > 0)
+            session.CurrentSearchterm = searchTerm;
+            session.SearchResults = SearchProduct.SearchProducts(searchTerm);
+            if (session.SearchResults.Count > 0)
             {
-                session.NotificationMessage = $"Hittade {searchResults.Count} matchningar: ";
+                session.NotificationMessage = $"Hittade {session.SearchResults.Count} matchningar: ";
             }
             
             
