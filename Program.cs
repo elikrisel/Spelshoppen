@@ -15,7 +15,6 @@ class Program
 {
     static void Main(string[] args)
     {
-        bool isRunning = true;
         UserSession session = new UserSession();
         
         #region Databas commented
@@ -30,7 +29,7 @@ class Program
 
          using (var db = new MyDbContext())
          {
-             while (isRunning)
+             while (session.IsRunning)
              {
                  
                  //Letar upp den aktuella sidan från min StateMachine
@@ -42,10 +41,9 @@ class Program
                  }
                  
                  var key = Console.ReadKey(true);
+                 while (Console.KeyAvailable) Console.ReadKey(true);
                  InputHandler.HandleInput(key, session, db);
                  
-                 
-                 if (session.State == MenuState.Quit) isRunning = false;
              }
          }
     }

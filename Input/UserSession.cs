@@ -33,7 +33,8 @@ public class UserSession
     public string CurrentSearchterm { get; set; }
     #endregion
     public Dictionary<ProductItem, int> CartItem { get; set; } = new();
-
+    
+    public bool IsRunning { get; set; } = true;
     public string NotificationMessage { get; set; }
     
     //Steptracker för CategoryMenu 

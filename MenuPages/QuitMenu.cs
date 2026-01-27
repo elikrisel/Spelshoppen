@@ -3,18 +3,36 @@ using Spelshoppen.UX;
 
 namespace Spelshoppen.MenuPages;
 
-//TODO: Fix Quit State
+
 public class QuitMenu : IMenuPage
 {
-    private List<ProductSearchResult> searchResults = new List<ProductSearchResult>();
+    
     public void DrawMenuPage(MyDbContext db, UserSession session)
     {
         UIRenderer.DrawBaseLayout(session);
-        
+        new UX.Window("AVSLUTA", 40, 10, new List<string>
+        {
+            "ÄR DU SÄKER PÅ ATT DU VILL AVSLUTA?",
+            "[J] JA, TA MIG HÄRIFRÅN!!!",
+            "[N] NEJ! JAG VILL FORTSÄTTA HANDLA!!!"
+        }).Draw();
+
     }
 
     public void PageInput(ConsoleKeyInfo key, char input, MyDbContext db, UserSession session)
     {
-        throw new NotImplementedException();
+        switch (char.ToUpper(input))
+        {
+            case 'J':
+                session.IsRunning = false;
+                
+                break;
+            case 'N':
+                session.State = MenuState.MainMenu;
+                break;
+            default:
+                session.NotificationMessage = "TRYCK [J] ELLER [N]!";
+                break;
+        }
     }
 }
