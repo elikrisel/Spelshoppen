@@ -19,11 +19,11 @@ class Program
         
         #region Databas commented
 
-         //using (var db = new MyDbContext())
-         //{
-         //    
-         //    SeedData(db);
-         //}
+         // using (var db = new MyDbContext())
+         // {
+         //     
+         //     SeedData(db);
+         // }
 
         #endregion
 

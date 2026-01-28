@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Spelshoppen.Transactions;
 
 namespace Spelshoppen.Models;
@@ -28,12 +29,16 @@ public class MyDbContext : DbContext
         //Sätter precision för priset
         modelBuilder.Entity<ProductItem>().Property(p => p.Price).HasPrecision(18, 2);
         
+        
     }
     
     //TODO: Testing purposes only
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=Spelshoppen;Trusted_Connection=True; TrustServerCertificate=True;");
+        var config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
+        var connString = config["MySettings:ConnectionString"];
+        optionsBuilder.UseSqlServer(connString);
+        //optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=Spelshoppen;Trusted_Connection=True; TrustServerCertificate=True;");
     }
     
 }
