@@ -38,12 +38,12 @@ public class SearchMenu : IMenuPage
         switch (char.ToUpper(key.KeyChar))
         {
             case 'F':
-                ExecuteSearch(session);
+                ExecuteSearch(session,db);
                 break;
         }
     }
 
-    private void ExecuteSearch(UserSession session)
+    private void ExecuteSearch(UserSession session,MyDbContext db)
     {
         session.ClearSearch();
         try
@@ -51,7 +51,7 @@ public class SearchMenu : IMenuPage
             Helpers.UpdateAndSetCursorPosition();
             string searchTerm = Helpers.Prompt("SÖK PRODUKT: ");
             session.CurrentSearchterm = searchTerm;
-            session.SearchResults = SearchProduct.SearchProducts(searchTerm);
+            session.SearchResults = SearchProduct.SearchProducts(searchTerm,db);
             if (session.SearchResults.Count > 0)
             {
                 session.NotificationMessage = $"Hittade {session.SearchResults.Count} matchningar: ";

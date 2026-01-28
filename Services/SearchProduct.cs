@@ -1,16 +1,16 @@
 using Microsoft.Data.SqlClient;
 using Dapper;
+using Microsoft.EntityFrameworkCore;
 using Spelshoppen.Models;
 
 namespace Spelshoppen;
 
 public class SearchProduct
 {
-    private static string connString =
-        "Server=.\\SQLExpress;Database=Spelshoppen;Trusted_Connection=True; TrustServerCertificate=True;";
     
-    public static List<ProductSearchResult> SearchProducts(string searchTerm)
+    public static List<ProductSearchResult> SearchProducts(string searchTerm, MyDbContext db)
     {
+        var connection = db.Database.GetDbConnection();
         string schemaName = "Spelshoppen";
         string sql = $"""
                       SELECT 
@@ -22,12 +22,10 @@ public class SearchProduct
                       WHERE p.Title LIKE '%' + @SearchTerm + '%'
                          OR p.Description LIKE '%' + @SearchTerm + '%'
                       """;
-        List<Models.ProductSearchResult> allSearchResults = new List<Models.ProductSearchResult>();
-        using var connection = new SqlConnection(connString);
-        allSearchResults = connection.Query<Models.ProductSearchResult>
-            (sql, new { SearchTerm = searchTerm }).ToList();
-
-        return allSearchResults;
-
+        
+        
+        return connection.Query<Models.ProductSearchResult>(sql, new { SearchTerm = searchTerm }).ToList();
+        
+        
     }
 }
