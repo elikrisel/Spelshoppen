@@ -1,3 +1,4 @@
+using Spelshoppen.Models;
 using Spelshoppen.UX;
 
 namespace Spelshoppen;
@@ -26,32 +27,19 @@ public class Helpers
         Console.Write($"Varukorg: {session.CartItem.Count} stycken");
         Console.ResetColor();
     }
-    
     //Printar x linjer enligt användaren
     public static string PrintXNumberOfLines(int number) => new('-', number);
-
-    //Sätter ny cursor position och flyttar ner ytterligare rader
-    public static void UpdateAndSetCursorPosition()
-    {
-        int newCursorPosition = Lowest.LowestPosition + 2;
-        int rowCount = 5;
-        Console.SetCursorPosition(0, newCursorPosition);
-
-        for (int i = 0; i < rowCount; i++)
-        {
-            Console.WriteLine(new string(' ',Console.WindowWidth));
-        }
-        Console.SetCursorPosition(0, newCursorPosition);
-        
-    }
+    #region Properties for Featured Menu
+    public static int[] SetXPositionOnFeatured => [10, 40, 80];
+    public static int SetYPositionOnFeatured => 15;
+    public static int MaxTitleLengthOnFeatured => 30;
+    #endregion
     public static string Prompt(string message)
     {
         Console.CursorVisible = true;
-        Console.Write(message);
-        string input = Console.ReadLine() ?? "";
+        Console.Write($" >> {message}: ");
+        string input = Console.ReadLine() ?? string.Empty;
         Console.CursorVisible = false;
-        if (string.IsNullOrWhiteSpace(input)) throw new Exception("Tom inmatning");
         return input;
     }
-    
 }

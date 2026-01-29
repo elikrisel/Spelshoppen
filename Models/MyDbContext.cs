@@ -32,13 +32,12 @@ public class MyDbContext : DbContext
         
     }
     
-    //TODO: Testing purposes only
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
         var connString = config["MySettings:ConnectionString"];
         optionsBuilder.UseSqlServer(connString);
-        //optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=Spelshoppen;Trusted_Connection=True; TrustServerCertificate=True;");
+        
     }
     
 }

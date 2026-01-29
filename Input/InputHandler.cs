@@ -11,20 +11,34 @@ public class InputHandler
     {
         Console.Write(firstDigit);
         string? restOfInput = Console.ReadLine();
-        if (int.TryParse(firstDigit + restOfInput, out int id))
-        {
-            return id;
-        }
-
-        return 0;
+        return int.TryParse(firstDigit + restOfInput, out int id) ? id : 0;
     }
-
-    public static int GetAdminIdInput(string message)
+    
+    //Används i CategoryMenu och AdminMenu för samma stegprocess
+    public static void HandleNavigation(MyDbContext db, UserSession session, char input)
     {
-        Helpers.UpdateAndSetCursorPosition();
-        Console.Write(message);
-        char firstChar = Console.ReadKey(true).KeyChar;
-        return PromptForId(firstChar);
+        //Nollställ
+        int id = PromptForId(input);
+        if (id == 0)
+        {
+            if (session.SelectedProductId != 0) session.SelectedProductId = 0;
+            else if (session.SelectedCategoryId != 0) session.SelectedCategoryId = 0;
+            return;
+        }
+        
+        //Väljer Kategori
+        if (session.SelectedCategoryId == 0)
+        {
+            if (db.Categories.Any(c => c.Id == id)) session.SelectedCategoryId = id;
+            else session.NotificationMessage = $"Kategori {id} finns inte!";
+        }
+        // Välj produkt
+        else if (session.SelectedProductId == 0)
+        {
+            if (db.Products.Any(p => p.Id == id && p.CategoryId == session.SelectedCategoryId)) 
+                session.SelectedProductId = id;
+            else session.NotificationMessage = $"Produkten tillhör inte kategorin!";
+        }
     }
     
     //String Labels till Menyn
@@ -63,7 +77,6 @@ public class InputHandler
     public static void HandleInput(ConsoleKeyInfo key, UserSession session, MyDbContext db)
     {
         char input = char.ToUpper(key.KeyChar);
-
         //Kollar KeyInput för menyn
         if (KeyBindings.TryGetValue(input, out var newState))
         {
@@ -71,12 +84,10 @@ public class InputHandler
             session.ResetSelection();
             return;
         }
-
         //Skickar oss till nästa sida i state
         if (Pages.TryGetValue(session.State, out var currentPage))
         {
             currentPage.PageInput(key, input, db, session);
-            
         }
     }
 }

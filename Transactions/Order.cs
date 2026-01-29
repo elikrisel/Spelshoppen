@@ -16,7 +16,7 @@ public class Order
     public virtual City Cities { get; set; }
 
     public int PaymentId { get; set; }
-    public virtual PaymentMethod PaymentMethods { get; set; }
+    public virtual PaymentMethod? PaymentMethods { get; set; }
 
     public virtual ICollection<OrderLine> OrderLines { get; set; } = new List<OrderLine>();
     

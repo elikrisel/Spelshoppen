@@ -37,8 +37,7 @@ public class UserSession
     public bool IsRunning { get; set; } = true;
     public string NotificationMessage { get; set; }
     
-    //Steptracker för CategoryMenu 
-    //TODO: STEPTRACKER IN CARTMENU?
+    
     public int CurrentStep
     {
         get

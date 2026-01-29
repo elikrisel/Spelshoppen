@@ -6,5 +6,4 @@ public enum CheckoutState
     EditingItem,
     EnteringDetails,
     ProcessOrder
-        
 }

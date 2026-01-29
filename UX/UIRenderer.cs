@@ -7,7 +7,6 @@ public class UIRenderer
     public static void DrawBaseLayout(UserSession session)
     {
         Console.Clear();
-        UX.Lowest.LowestPosition = 0;
         
         //Debug Window:
         Helpers.ShowDebugInfo(session.State);
@@ -16,7 +15,6 @@ public class UIRenderer
         //Trackar Kategori val
         Helpers.ShowDebugInCategorySelection(session);
         
-
         // Toppfönster
         new UX.Window("", 45, 1, new List<string> { "# Spelshoppen #", "Finns nu i Konsol app!" }).Draw();
     
@@ -26,31 +24,41 @@ public class UIRenderer
             .Select(kvp => kvp.Value).ToList();
         new UX.Window("Kundmeny", 2, 1, menuRows).Draw();
     }
-
-    public static void DrawNotifications(UserSession session)
-    { 
-        if (string.IsNullOrEmpty(session.NotificationMessage)) return;
-
-        Console.SetCursorPosition(0, Lowest.LowestPosition + 2);
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine(Helpers.PrintXNumberOfLines(60));
-        Console.WriteLine($" NOTIS: {session.NotificationMessage}");
-        Console.WriteLine(Helpers.PrintXNumberOfLines(60));
-        Console.ResetColor();
-
+    public static void DrawCategoryMenu(MyDbContext db,string menuName)
+    {
+        var categories = db.Categories.Select(c => $"[{c.Id}] {c.Title}").ToList();
+        new UX.Window( $"{menuName}", 10, 8, categories).Draw();
+    }
+    public static void DrawProductWindow(MyDbContext db, int categoryId)
+    {
+        var products = db.Products.Where(p => p.CategoryId == categoryId)
+            .Select(p => $"[{p.Id}] {p.Title}").ToList();
+        new UX.Window("PRODUKTER", 30, 8, products).Draw();
     }
     
-    //TODO: Flytta över den här till varje meny
     public static void DrawCategoryPrompts(UserSession session)
     {
+        
+        
         string[] prompts = 
         {
             "Skriv Kategori-ID",
             "Skriv Produkt-ID för att visa information",
-            "Tryck [ENTER] för att Köpa eller skriv ett annat ID för att gå till en annan produkt:"
+            "Tryck [ENTER] för att Köpa eller skriv ett annat ID för att gå till en annan produkt"
         };
+    
+        // Bestämmer en fast rad, 5 rader från botten av konsolen
+        int fixedRow = Console.WindowHeight - 5; 
+
+        //Går till raden under och tar bort
+        Console.SetCursorPosition(0, fixedRow);
+        Console.Write(new string(' ', Console.WindowWidth)); 
         
-        Console.SetCursorPosition(0, Console.CursorTop + 1); 
+        Console.SetCursorPosition(0, fixedRow + 1);
+        Console.Write(new string(' ', Console.WindowWidth));
+        
+        Console.SetCursorPosition(0, fixedRow);
+
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write($" >> {prompts[session.CurrentStep]}: ");
         Console.ResetColor();

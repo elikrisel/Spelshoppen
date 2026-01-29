@@ -126,41 +126,61 @@ public class CartMenu : IMenuPage
             case 'B': session.Status = CheckoutState.ReviewingCart; break;
         }
     }
-
     private void RunCheckout(UserSession session, MyDbContext db)
     {
         
-        Helpers.UpdateAndSetCursorPosition();
+        //Helpers.UpdateAndSetCursorPosition();
         Console.WriteLine("KASSA: ANGE DINA UPPGIFTER:");
 
         try
         {
-            session.FirstName = Helpers.Prompt("Förnamn: ");
-            session.LastName = Helpers.Prompt("Efternamn: ");
-            session.StreetName = Helpers.Prompt("Gatuadress: ");
-            session.CityName = Helpers.Prompt("Stad: ");
+            session.FirstName = Helpers.Prompt("Förnamn");
+            session.LastName = Helpers.Prompt("Efternamn");
+            session.StreetName = Helpers.Prompt("Gatuadress");
+            session.CityName = Helpers.Prompt("Stad");
             
             //Är Tvungen att inkludera Countries och Payment på grund av hur jag hade satt upp i min databas
             var countries = db.Countries.ToList();
-            Console.WriteLine("\nVÄLJ LAND (ID):");
-            foreach (var c in countries)
+            //Kollar om det finns ett land
+            if (countries.Any())
             {
-                Console.WriteLine($"[{c.Id}] {c.Name}");
+                Console.WriteLine("Välj Land-ID:\n");
+                foreach (var c in countries)
+                {
+                    Console.WriteLine($"[{c.Id}][{c.Name}]");
+                }
+                session.SelectedCountryId = InputHandler.PromptForId(Console.ReadKey(true).KeyChar);
+                session.CountryName = countries.FirstOrDefault(c => c.Id == session.SelectedCountryId)?.Name ?? "";           
             }
-            
-            session.SelectedCountryId = InputHandler.PromptForId(Console.ReadKey(true).KeyChar);
+            else
+            {
+                //Om inte så får användaren mata in
+                session.CountryName = Helpers.Prompt("Ange land");
+                session.SelectedCountryId = 0;
+            }
             
             
             var payments = db.PaymentMethods.ToList();
-            Console.WriteLine("\nVÄLJ BETALSÄTT (ID):");
-            foreach (var p in payments) Console.WriteLine($"[{p.Id}] {p.Name}");
+            if (payments.Any())
+            {
+                Console.WriteLine("\nVÄLJ BETALSÄTT (ID):");
+                foreach (var p in payments)
+                {
+                    Console.WriteLine($"[{p.Id}] {p.Name}");
+                } 
+                session.SelectedPaymentMethodId = InputHandler.PromptForId(Console.ReadKey(true).KeyChar);
+                session.PaymentMethodName = payments.FirstOrDefault(p => p.Id == session.SelectedPaymentMethodId)
+                    ?.Name ?? "";
+            }
+            else
+            {
+                session.PaymentMethodName = Helpers.Prompt("Ange betalning");
+                session.SelectedPaymentMethodId = 0;
+            }
     
-            session.SelectedPaymentMethodId = InputHandler.PromptForId(Console.ReadKey(true).KeyChar);
-
             // När alla uppgifter är insamlade, gå till nästa state
             session.Status = CheckoutState.ProcessOrder;
-
-            // Anropa tjänsten som sköter databasjobbet
+            
             OrderService.CreateOrder(db, session);
             session.CartItem.Clear();
             session.SelectedProductId = 0;
@@ -173,7 +193,5 @@ public class CartMenu : IMenuPage
             session.Status = CheckoutState.ReviewingCart;
         }
     }
-
     
-
 }

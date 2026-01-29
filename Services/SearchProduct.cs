@@ -7,7 +7,6 @@ namespace Spelshoppen;
 
 public class SearchProduct
 {
-    
     public static List<ProductSearchResult> SearchProducts(string searchTerm, MyDbContext db)
     {
         var connection = db.Database.GetDbConnection();
@@ -22,10 +21,7 @@ public class SearchProduct
                       WHERE p.Title LIKE '%' + @SearchTerm + '%'
                          OR p.Description LIKE '%' + @SearchTerm + '%'
                       """;
-        
-        
+
         return connection.Query<Models.ProductSearchResult>(sql, new { SearchTerm = searchTerm }).ToList();
-        
-        
     }
 }

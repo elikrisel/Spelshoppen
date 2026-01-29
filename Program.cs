@@ -3,14 +3,6 @@ using Spelshoppen.UX;
 
 namespace Spelshoppen;
 
-/// <summary>
-/// 1. ADMIN LÄGGA IN PRODUKTER
-/// LÄGGA IN CRUD
-/// LÄGGA TILL, TA BORT, ÄNDRA PRIS
-/// 2. UTVALDA PRODUKTER BOOL SHOW ON FIRST PAGE
-/// 3. INGA QUERIES - PRODUKTER SOM ÄR SLUT I LAGER
-/// 4. FIXA AZURE
-/// </summary>
 class Program
 {
     static void Main(string[] args)
@@ -31,7 +23,7 @@ class Program
          {
              while (session.IsRunning)
              {
-                 
+                 Console.CursorVisible = false;
                  //Letar upp den aktuella sidan från min StateMachine
                  if (InputHandler.Pages.TryGetValue(session.State, out var currentPage))
                  {

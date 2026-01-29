@@ -10,13 +10,13 @@ public class QuitMenu : IMenuPage
     public void DrawMenuPage(MyDbContext db, UserSession session)
     {
         UIRenderer.DrawBaseLayout(session);
-        new UX.Window("AVSLUTA", 40, 10, new List<string>
+        var textRows = new List<string>
         {
             "ÄR DU SÄKER PÅ ATT DU VILL AVSLUTA?",
             "[J] JA, TA MIG HÄRIFRÅN!!!",
-            "[N] NEJ! JAG VILL FORTSÄTTA HANDLA!!!"
-        }).Draw();
-
+            "[N] NEJ! JAG VILL FORTSÄTTA HANDLA!!!"   
+        };
+        new UX.Window("AVSLUTA", 40, 10,textRows).Draw();
     }
 
     public void PageInput(ConsoleKeyInfo key, char input, MyDbContext db, UserSession session)
@@ -25,7 +25,6 @@ public class QuitMenu : IMenuPage
         {
             case 'J':
                 session.IsRunning = false;
-                
                 break;
             case 'N':
                 session.State = MenuState.MainMenu;

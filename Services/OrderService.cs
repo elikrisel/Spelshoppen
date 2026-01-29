@@ -10,60 +10,50 @@ public class OrderService
     {
         try
         {
-            // Hämtning av Country och Payment, om det inte finns i databasen så skapas nytt land och payment
-            var country = db.Countries.FirstOrDefault(c => c.Name == session.CountryName);
-            if (country == null)
-            {
-                country = new Country { Name = session.CountryName };
-                db.Countries.Add(country);
-                db.SaveChanges(); 
-            }
-            
-            var payment = db.PaymentMethods.FirstOrDefault(p => p.Name == session.PaymentMethodName);
-            if (payment == null)
-            {
-                payment = new PaymentMethod { Name = session.PaymentMethodName };
-                db.PaymentMethods.Add(payment);
-                db.SaveChanges();
-            }
+            // // Hämtning av Country och Payment, om det inte finns i databasen så skapas nytt land och payment
+            var country = session.SelectedCountryId > 0 
+                ? db.Countries.Find(session.SelectedCountryId) 
+                : new Country { Name = session.CountryName };
 
+            var payment = session.SelectedPaymentMethodId > 0 
+                ? db.PaymentMethods.Find(session.SelectedPaymentMethodId) 
+                : new PaymentMethod { Name = session.PaymentMethodName };
+            
             var city = db.Cities.FirstOrDefault(c => c.Name == session.CityName)
                        ?? new City { Name = session.CityName, Country = country };
-
+        
             
-
-            var order = new Order {
-                Customers = GetOrCreateCustomer(db, session),
-                Cities = city,
-                PaymentMethods = payment,
-                OrderDate = DateTime.Now,
-                TotalAmount = session.CartItem.Sum(kvp => kvp.Key.Price * kvp.Value),
-                Street = session.StreetName
-            };
+             var order = new Order {
+                 Customers = GetOrCreateCustomer(db, session),
+                 Cities = city,
+                 PaymentMethods = payment,
+                 OrderDate = DateTime.Now,
+                 TotalAmount = session.CartItem.Sum(kvp => kvp.Key.Price * kvp.Value),
+                 Street = session.StreetName
+             };
             
-            foreach (var entry in session.CartItem)
-            {
-                order.OrderLines.Add(new OrderLine {
-                    ProductItemId = entry.Key.Id,
-                    Quantity = entry.Value,
-                    TotalPrice = entry.Key.Price,
-                    VatRate = 0.25m
-                });
-            }
-
+              foreach (var entry in session.CartItem)
+              {
+                  order.OrderLines.Add(new OrderLine {
+                      ProductItemId = entry.Key.Id,
+                      Quantity = entry.Value,
+                      TotalPrice = entry.Key.Price,
+                      VatRate = 0.25m
+                  });
+              }
+            
             db.Orders.Add(order);
-            db.SaveChanges();
+            db.SaveChanges(); 
             
-            session.CartItem.Clear();
-            session.NotificationMessage = "Order sparad! Tack för ditt köp.";
         }
         catch (Exception ex)
         {
-            session.NotificationMessage = "Kunde inte spara order: " + ex.Message;
+            Console.WriteLine($"DATABASE ERROR: {ex.Message}");
+            if (ex.InnerException != null) Console.WriteLine($"INNER: {ex.InnerException.Message}");
         }
         finally
         {
-            
+            //Går tillbaks till initial states        
             session.Status = CheckoutState.ReviewingCart;
             session.State = MenuState.MainMenu;
         }
@@ -71,12 +61,12 @@ public class OrderService
     
     private static Customer GetOrCreateCustomer(MyDbContext db, UserSession session)
     {
-        // Försöker hitta en befintlig kund som har samma namn
+        // Kollar efter redan en existerande kund registrerad
         var customer = db.Customers.FirstOrDefault(c => 
             c.FirstName == session.FirstName && 
             c.LastName == session.LastName);
 
-        //Skapar en ny om Kunden inte finns
+        //Om kunden inte finns så skapar vi en ny
         if (customer == null)
         {
             customer = new Customer 
@@ -85,12 +75,9 @@ public class OrderService
                 LastName = session.LastName, 
                 Street = session.StreetName 
             };
-            
+            db.Customers.Add(customer);
         }
-
         return customer;
     }
-    
-    
     
 }

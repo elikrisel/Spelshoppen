@@ -48,22 +48,19 @@ public class SearchMenu : IMenuPage
         session.ClearSearch();
         try
         {
-            Helpers.UpdateAndSetCursorPosition();
-            string searchTerm = Helpers.Prompt("SÖK PRODUKT: ");
+           
+            string searchTerm = Helpers.Prompt("SÖK PRODUKT");
             session.CurrentSearchterm = searchTerm;
             session.SearchResults = SearchProduct.SearchProducts(searchTerm,db);
             if (session.SearchResults.Count > 0)
             {
                 session.NotificationMessage = $"Hittade {session.SearchResults.Count} matchningar: ";
             }
-            
-            
         }
         catch(OperationCanceledException)
         {
             session.NotificationMessage = "SÖKNING AVBRUTEN";
         }
         UIRenderer.DrawBaseLayout(session);
-
     }
 }

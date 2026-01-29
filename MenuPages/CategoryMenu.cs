@@ -9,17 +9,14 @@ public class CategoryMenu : IMenuPage
     {
         UIRenderer.DrawBaseLayout(session);
         DrawWindows(db, session);
-        UIRenderer.DrawNotifications(session);
         UIRenderer.DrawCategoryPrompts(session);
     }
 
     public void PageInput(ConsoleKeyInfo key, char input, MyDbContext db, UserSession session)
     {
         
-        if (char.IsDigit(input))
-        {
-            ProcessIdInput(input, session, db);
-        }
+        if (char.IsDigit(input)) InputHandler.HandleNavigation(db, session, input);
+        
 
         //När användaren är på ProduktInformationen och Trycker på Enter så köper de varan.
         if (key.Key == ConsoleKey.Enter && session.SelectedProductId != 0)
@@ -30,54 +27,15 @@ public class CategoryMenu : IMenuPage
         }
     }
 
-    private static void ProcessIdInput(char input, UserSession session, MyDbContext db)
-    {
-        int id = InputHandler.PromptForId(input);
-        
-        if (session.SelectedCategoryId == 0)
-        {
-            if (!db.Categories.Any(c => c.Id == id))
-            {
-                session.NotificationMessage = $"Kategori {id} finns inte!";
-                return;
-            }
-
-            session.SelectedCategoryId = id;
-            return;
-        }
-
-        
-        if (!db.Products.Any(p => p.Id == id && p.CategoryId == session.SelectedCategoryId))
-        {
-            session.NotificationMessage = $"Produkt {id} finns inte i denna kategori!";
-            return;
-        }
-
-        session.SelectedProductId = id;
-    }
-
     private static void DrawWindows(MyDbContext db, UserSession session)
     {
-        DrawCategoryMenu(db);
+        UIRenderer.DrawCategoryMenu(db,"KATEGORIER");
         if (session.SelectedCategoryId != 0)
-            DrawProductWindow(db, session.SelectedCategoryId);
+            UIRenderer.DrawProductWindow(db, session.SelectedCategoryId);
         if (session.SelectedProductId != 0)
             DrawProductDetailsWindow(db, session.SelectedProductId);
     }
-
-    private static void DrawCategoryMenu(MyDbContext db)
-    {
-        var categories = db.Categories.Select(c => $"[{c.Id}] {c.Title}").ToList();
-        new UX.Window("KATEGORIER", 10, 8, categories).Draw();
-    }
-
-    private static void DrawProductWindow(MyDbContext db, int categoryId)
-    {
-        var products = db.Products.Where(p => p.CategoryId == categoryId)
-            .Select(p => $"[{p.Id}] {p.Title}").ToList();
-        new UX.Window("PRODUKTER", 30, 8, products).Draw();
-    }
-
+    
     private static void DrawProductDetailsWindow(MyDbContext db, int productId)
     {
         var product = StoreServices.GetFullProduct(db, productId);
