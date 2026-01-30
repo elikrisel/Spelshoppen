@@ -9,6 +9,7 @@ public class CategoryMenu : IMenuPage
     {
         UIRenderer.DrawBaseLayout(session);
         DrawWindows(db, session);
+        UIRenderer.DrawNotifications(session);
         UIRenderer.DrawCategoryPrompts(session);
     }
 
@@ -22,7 +23,7 @@ public class CategoryMenu : IMenuPage
         if (key.Key == ConsoleKey.Enter && session.SelectedProductId != 0)
         {
             var item = StoreServices.GetPurchasableItem(db,session.SelectedProductId);
-            if (item != null) StoreServices.ExecutePurchase(db, session, item);
+            if (item != null) StoreServices.ExecutePurchase(db,session, item);
             session.SelectedProductId = 0;
         }
     }

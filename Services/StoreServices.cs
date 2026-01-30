@@ -5,7 +5,7 @@ namespace Spelshoppen;
 
 public class StoreServices
 {
-    //Hämtar all information om Produkten
+    //Hämtar all information om Produkten och går igenom all relaterad data som ligger i andra tabeller
     public static Product? GetFullProduct(MyDbContext db, int productId) =>
         db.Products
             .Include(p => p.ProductItems)
@@ -13,8 +13,10 @@ public class StoreServices
             .Include(p => p.ProductGenres)
             .ThenInclude(pg => pg.Genres)
             .FirstOrDefault(p => p.Id == productId);
-    public static List<ProductItem> GetFullProductList(MyDbContext db) =>
-        db.ProductItems.Include(pi => pi.Products).OrderBy(pi => pi.Id).ToList();
+    
+    //Hämtar hela listan och numrerar dem efter ID
+    // public static List<ProductItem> GetFullProductList(MyDbContext db) =>
+    //     db.ProductItems.Include(pi => pi.Products).OrderBy(pi => pi.Id).ToList();
 
     // Vi letar efter ett item för denna produkt som faktiskt finns i lager
     public static ProductItem? GetPurchasableItem(MyDbContext db, int productId) =>
@@ -26,9 +28,11 @@ public class StoreServices
     public static List<ProductItem> GetFeaturedItems(MyDbContext db) =>
         db.ProductItems.Include(pi => pi.Products)
             .Where(pi => pi.IsFeatured && pi.UnitsInStock > 0).Take(3).ToList();
-
+    
+    
     public static bool ToggleFeaturedStatus(MyDbContext db, int productId)
     {
+        //Letar enbart efter den unika nyckeln för att ändra på IsFeatured
         var item = db.ProductItems.Find(productId);
 
         if (!item.IsFeatured)

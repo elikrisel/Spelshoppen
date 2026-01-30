@@ -10,7 +10,7 @@ public class CartMenu : IMenuPage
     public void DrawMenuPage(MyDbContext db, UserSession session)
     {
         UIRenderer.DrawBaseLayout(session);
-
+        UIRenderer.DrawNotifications(session);
         // Redigerar en specifik vara, ritar "EditingMenu"
         if (session.Status == CheckoutState.EditingItem)
         {
@@ -23,10 +23,10 @@ public class CartMenu : IMenuPage
                     $"PRIS ST: {item.Price} kr",
                     $"ANTAL:   {session.CartItem[item]} st",
                     $"TOTALT:  {item.Price * session.CartItem[item]} kr",
-                    "",
+                    $"{Helpers.PrintXNumberOfLines(25)}",
                     "[+] Öka antal",
                     "[-] Minska antal",
-                    "[D] Ta bort från korg", //ÄNDRA I SAMBAND MED CRUD?
+                    "[D] Ta bort från korg", 
                     "[B] Gå tillbaka"
                 };
                 new UX.Window("ÄNDRA ANTAL", 15, 8, editDetails).Draw();
@@ -107,8 +107,15 @@ public class CartMenu : IMenuPage
         switch (input)
         {
             case '+':
-                session.CartItem[item]++;
-                item.UnitsInStock--;
+                if (item.UnitsInStock > 0) 
+                {
+                    session.CartItem[item]++;
+                    item.UnitsInStock--;
+                }
+                else 
+                {
+                    session.NotificationMessage = "Lagret är tyvärr slut!";
+                }
                 break;
             case '-':
                 if (session.CartItem[item] > 1)
@@ -116,7 +123,11 @@ public class CartMenu : IMenuPage
                     session.CartItem[item]--;
                     item.UnitsInStock++;
                 }
-
+                else if (session.CartItem[item] == 1)
+                {
+                    session.CartItem.Remove(item); 
+                    item.UnitsInStock++;           
+                }
                 break;
             case 'D': //Radera från varukorg
                 item.UnitsInStock += session.CartItem[item];
@@ -182,15 +193,16 @@ public class CartMenu : IMenuPage
             session.Status = CheckoutState.ProcessOrder;
             
             OrderService.CreateOrder(db, session);
+            session.NotificationMessage = "TACK FÖR DITT KÖP!";
             session.CartItem.Clear();
             session.SelectedProductId = 0;
             session.Status = CheckoutState.ReviewingCart;
-            session.NotificationMessage = "TACK FÖR DITT KÖP!";
         }
         catch (Exception)
         {
-            session.NotificationMessage = "Inmatning avbröts.";
+            session.NotificationMessage = "Kunde inte spara ordern. Försök igen senare";
             session.Status = CheckoutState.ReviewingCart;
+            Console.WriteLine("Kunde inte spara ordern!");
         }
     }
     

@@ -9,11 +9,11 @@ public class UIRenderer
         Console.Clear();
         
         //Debug Window:
-        Helpers.ShowDebugInfo(session.State);
+        //Helpers.ShowDebugInfo(session.State);
         // Varukorg
         Helpers.ShowCart(session);
         //Trackar Kategori val
-        Helpers.ShowDebugInCategorySelection(session);
+        //Helpers.ShowDebugInCategorySelection(session);
         
         // Toppfönster
         new UX.Window("", 45, 1, new List<string> { "# Spelshoppen #", "Finns nu i Konsol app!" }).Draw();
@@ -63,7 +63,26 @@ public class UIRenderer
         Console.Write($" >> {prompts[session.CurrentStep]}: ");
         Console.ResetColor();
     }
-    
+    public static void DrawNotifications(UserSession session)
+    {
+        if (!string.IsNullOrEmpty(session.NotificationMessage))
+        {
+            
+            int notificationRow = Console.WindowHeight - 7;
+
+            // Rensar raden först om gamla notiser ligger kvar
+            Console.SetCursorPosition(0, notificationRow);
+            Console.Write(new string(' ', Console.WindowWidth));
+
+            //Skriver ut den nya notisen
+            Console.SetCursorPosition(2, notificationRow);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write($"! {session.NotificationMessage} ");
+            Console.ResetColor();
+
+            session.NotificationMessage = "";
+        }
+    }
     
     
 }

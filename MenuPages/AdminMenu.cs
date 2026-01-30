@@ -12,7 +12,7 @@ public class AdminMenu : IMenuPage
         DrawWindows(db, session); 
         var rows = new List<string>() { "[L] LÄGG TILL", "[P] PROGNOS" };
         new UX.Window("ADMIN", 20, 1, rows).Draw(); 
-        //UIRenderer.DrawNotifications(session);
+        UIRenderer.DrawNotifications(session);
         UIRenderer.DrawCategoryPrompts(session);
     }
 
@@ -26,7 +26,7 @@ public class AdminMenu : IMenuPage
             switch (command)
             {
                 case 'L': AddProduct(db, session); break;
-                case 'P': GetStatistics(db,session); break;
+                case 'P': GetStatistics(db); break;
             }
 
             if (session.SelectedProductId != 0)
@@ -84,7 +84,7 @@ public class AdminMenu : IMenuPage
     }
 
     //TODO: REFACTOR
-    private static void GetStatistics(MyDbContext db,UserSession session)
+    private static void GetStatistics(MyDbContext db)
     {
         var outOfStockCount = db.ProductItems.Count(pi => pi.UnitsInStock == 0);
         var mostStockCount = db.ProductItems.OrderByDescending(pi =>  pi.UnitsInStock).

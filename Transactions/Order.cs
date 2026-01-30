@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Spelshoppen.Transactions;
 
 public class Order
@@ -16,7 +18,9 @@ public class Order
     public virtual City Cities { get; set; }
 
     public int PaymentId { get; set; }
-    public virtual PaymentMethod? PaymentMethods { get; set; }
+    
+    [ForeignKey("PaymentId")]
+    public virtual PaymentMethod PaymentMethods { get; set; }
 
     public virtual ICollection<OrderLine> OrderLines { get; set; } = new List<OrderLine>();
     

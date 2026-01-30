@@ -48,14 +48,20 @@ public class AdminService
             FirstOrDefault(p => p.ProductId == productId);
         
         //Tar bort både från Products och ProductItem
-        if (item != null && item.Products != null)
+        if (item == null || item.Products == null) return false;
+        try
         {
             db.ProductGenres.RemoveRange(item.Products.ProductGenres);   
             db.ProductItems.Remove(item);
             db.Products.Remove(item.Products);
             db.SaveChanges();
+            return true;
         }
-        return true;
+        catch (DbUpdateException)
+        {
+            return false;
+        }
+        
     }
     
 }

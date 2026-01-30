@@ -23,6 +23,7 @@ public class OrderService
                        ?? new City { Name = session.CityName, Country = country };
         
             
+            //Se vem det är som skapade ordern
              var order = new Order {
                  Customers = GetOrCreateCustomer(db, session),
                  Cities = city,
@@ -32,6 +33,7 @@ public class OrderService
                  Street = session.StreetName
              };
             
+             //Detaljer om vem som köpte det och vad för items som köptes
               foreach (var entry in session.CartItem)
               {
                   order.OrderLines.Add(new OrderLine {
@@ -50,13 +52,14 @@ public class OrderService
         {
             Console.WriteLine($"DATABASE ERROR: {ex.Message}");
             if (ex.InnerException != null) Console.WriteLine($"INNER: {ex.InnerException.Message}");
+            throw;
         }
-        finally
-        {
-            //Går tillbaks till initial states        
-            session.Status = CheckoutState.ReviewingCart;
-            session.State = MenuState.MainMenu;
-        }
+        // finally
+        // {
+        //     //Går tillbaks till initial states        
+        //     session.Status = CheckoutState.ReviewingCart;
+        //     session.State = MenuState.MainMenu;
+        // }
     }
     
     private static Customer GetOrCreateCustomer(MyDbContext db, UserSession session)

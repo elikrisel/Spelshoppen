@@ -65,5 +65,19 @@ public class UserSession
         CurrentSearchterm = "";
         SearchResults.Clear();
     }
+    public void ResetAfterPurchase()
+    {
+        CartItem.Clear();
+        FirstName = "";
+        LastName = "";
+        StreetName = "";
+        CityName = "";
+        SelectedCountryId = 0;
+        SelectedPaymentMethodId = 0;
+        SelectedProductId = 0;
+        SelectedCategoryId = 0;
+        
+    }
+    
     
 }

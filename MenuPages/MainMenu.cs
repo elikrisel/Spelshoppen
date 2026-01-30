@@ -36,7 +36,7 @@ public class MainMenu : IMenuPage
             }).Draw();
             
         }
-        //UIRenderer.DrawNotifications(session);
+        UIRenderer.DrawNotifications(session);
         
     }
     
