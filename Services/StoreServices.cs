@@ -14,22 +14,19 @@ public class StoreServices
             .ThenInclude(pg => pg.Genres)
             .FirstOrDefault(p => p.Id == productId);
     
-    //Hämtar hela listan och numrerar dem efter ID
-    // public static List<ProductItem> GetFullProductList(MyDbContext db) =>
-    //     db.ProductItems.Include(pi => pi.Products).OrderBy(pi => pi.Id).ToList();
 
-    // Vi letar efter ett item för denna produkt som faktiskt finns i lager
+    // Vi letar efter ett item beroende på id input och kollar om produkten finns i lagret
     public static ProductItem? GetPurchasableItem(MyDbContext db, int productId) =>
         db.ProductItems
             .Include(pi => pi.Products)
             .FirstOrDefault(pi => pi.ProductId == productId && pi.UnitsInStock > 0);
     
-    //Hämtar tre stycken produkter som har "IsFeatured" till Erbjudanden
+    //Hämtar tre stycken produkter som har "IsFeatured" till Erbjudanden. Extra säkerhetsåtgärd fastän man har ställt in hur många som visas
     public static List<ProductItem> GetFeaturedItems(MyDbContext db) =>
         db.ProductItems.Include(pi => pi.Products)
             .Where(pi => pi.IsFeatured && pi.UnitsInStock > 0).Take(3).ToList();
     
-    
+    //Togglar vilket item som ska vara i featured. Om redan tre stycken är featured, så returnar den
     public static bool ToggleFeaturedStatus(MyDbContext db, int productId)
     {
         //Letar enbart efter den unika nyckeln för att ändra på IsFeatured
@@ -52,13 +49,13 @@ public class StoreServices
     public static void ExecutePurchase(MyDbContext db, UserSession session, ProductItem item)
     {
         if (item != null)
-        {
+        {   //Tar från lagret
             item.UnitsInStock--;
 
             //Kolla om varan redan finns i Dictionary
             var existingKey = session.CartItem.Keys.FirstOrDefault(k => k.Id == item.Id);
 
-            //Kollar om varan finns i varukorgen eller inte
+            //Kollar om varan finns i varukorgen eller inte och uppdaterar
             if (existingKey != null)
             {
                 session.CartItem[existingKey]++;

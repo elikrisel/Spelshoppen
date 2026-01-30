@@ -7,7 +7,7 @@ public class AdminService
 {
     public static void AddProduct(MyDbContext db, string title, string description, decimal price, int stock, int categoryId,
         List<int> genreIds,int suppId, string condition)
-    {
+    {   //Lägger till en ny product
         var newProduct = new Product
         {
             Title = title,
@@ -15,7 +15,7 @@ public class AdminService
             CategoryId = categoryId,
             ProductGenres = new List<ProductGenre>()
         };
-
+        //Om det är spel så läggs genres in
         if (genreIds != null && genreIds.Count > 0)
         {
             foreach (var genreId in genreIds)
@@ -26,6 +26,7 @@ public class AdminService
                 });
             }
         }
+        //Lägger in en product item
         var newItem = new ProductItem
         {
             Products = newProduct,
@@ -35,7 +36,7 @@ public class AdminService
             Condition = condition,
             IsFeatured = false,
         };
-
+        //Lägger in och sparar
         db.ProductItems.Add(newItem);
         db.SaveChanges();
 

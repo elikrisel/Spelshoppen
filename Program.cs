@@ -8,36 +8,33 @@ class Program
     static void Main(string[] args)
     {
         UserSession session = new UserSession();
-        
+
         #region Databas commented
 
-         // using (var db = new MyDbContext())
-         // {
-         //     
-         //     SeedData(db);
-         // }
+        // using (var db = new MyDbContext())
+        // {
+        //     
+        //     SeedData(db);
+        // }
 
         #endregion
 
-         using (var db = new MyDbContext())
-         {
-             while (session.IsRunning)
-             {
-                 Console.CursorVisible = false;
-                 //Letar upp den aktuella sidan från min StateMachine
-                 if (InputHandler.Pages.TryGetValue(session.State, out var currentPage))
-                 {
-                     //Ritar upp för varje state
-                     currentPage.DrawMenuPage(db, session);
-                     
-                 }
-                 
-                 var key = Console.ReadKey(true);
-                 while (Console.KeyAvailable) Console.ReadKey(true);
-                 InputHandler.HandleInput(key, session, db);
-                 
-             }
-         }
+        using (var db = new MyDbContext())
+        {
+            while (session.IsRunning)
+            {
+                Console.CursorVisible = false;
+                //Letar upp den aktuella sidan från min StateMachine och ritar upp varje state
+                if (InputHandler.Pages.TryGetValue(session.State, out var currentPage))
+                {
+                    currentPage.DrawMenuPage(db, session);
+                }
+
+                var key = Console.ReadKey(true);
+                while (Console.KeyAvailable) Console.ReadKey(true);
+                InputHandler.HandleInput(key, session, db);
+            }
+        }
     }
 
     private static void SeedData(MyDbContext db)

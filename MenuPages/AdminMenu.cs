@@ -82,8 +82,7 @@ public class AdminMenu : IMenuPage
 
         new UX.Window("PRODUKTER (NAVIGERA MED ID)", 35, 8, rows).Draw();
     }
-
-    //TODO: REFACTOR
+    
     private static void GetStatistics(MyDbContext db)
     {
         var outOfStockCount = db.ProductItems.Count(pi => pi.UnitsInStock == 0);
@@ -106,11 +105,10 @@ public class AdminMenu : IMenuPage
         Console.ReadKey(true);
     }
     
-    
     private static void AddProduct(MyDbContext db, UserSession session)
     {
         UIRenderer.DrawBaseLayout(session);
-        //Helpers.UpdateAndSetCursorPosition();
+    
 
         //Väljer kategori ID
         var categoryList = db.Categories.Select(c => $"[{c.Id}] {c.Title}").ToList();

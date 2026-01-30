@@ -33,7 +33,7 @@ public class CartMenu : IMenuPage
                 return; 
             }
         }
-        
+        //Om kunden inte har lagt in något i varukorgen
         if (session.CartItem.Count == 0)
         {
             new UX.Window("VARUKORG", 15, 8,
@@ -76,7 +76,7 @@ public class CartMenu : IMenuPage
     private void HandleCartReview(ConsoleKeyInfo key, char input, UserSession session,MyDbContext db)
     {
         if (char.IsDigit(input))
-        {
+        {   //Letar input beroende på vad för produkt som finns i varukorgen
             int id = InputHandler.PromptForId(input);
             if (session.CartItem.Keys.Any(k => k.Id == id))
             {
@@ -89,14 +89,14 @@ public class CartMenu : IMenuPage
             }
         }
         else if (key.Key == ConsoleKey.Enter && session.CartItem.Any())
-        {
+        {   
             session.Status = CheckoutState.EnteringDetails;
             RunCheckout(session, db);
         }
     }
 
     private void HandleItemEdit(char input, UserSession session)
-    {
+    {   //Väljer en produkt att redigera
         var item = session.CartItem.Keys.FirstOrDefault(k => k.Id == session.SelectedProductId);
         if (item == null)
         {
@@ -140,11 +140,11 @@ public class CartMenu : IMenuPage
     private void RunCheckout(UserSession session, MyDbContext db)
     {
         
-        //Helpers.UpdateAndSetCursorPosition();
+        
         Console.WriteLine("KASSA: ANGE DINA UPPGIFTER:");
 
         try
-        {
+        {   //Skriver in information
             session.FirstName = Helpers.Prompt("Förnamn");
             session.LastName = Helpers.Prompt("Efternamn");
             session.StreetName = Helpers.Prompt("Gatuadress");
@@ -170,7 +170,7 @@ public class CartMenu : IMenuPage
                 session.SelectedCountryId = 0;
             }
             
-            
+            //Samma funktionalitet som Countries
             var payments = db.PaymentMethods.ToList();
             if (payments.Any())
             {

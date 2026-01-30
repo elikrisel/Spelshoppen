@@ -43,7 +43,7 @@ public class OrderService
                       VatRate = 0.25m
                   });
               }
-            
+            //Lägger in ordern och sparar i databasen
             db.Orders.Add(order);
             db.SaveChanges(); 
             

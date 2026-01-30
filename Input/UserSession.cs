@@ -11,6 +11,7 @@ public class UserSession
     #endregion    
     
     #region CartMenu and Order properties
+    //TODO: ADD ADDITIONAL FOR REQUIREMENT
     public string FirstName { get; set; } = "";
     public string LastName { get; set; } = "";
     public string StreetName { get; set; } = "";
@@ -28,16 +29,18 @@ public class UserSession
     #endregion
     
     #region Search Properties
-
+    //Sökproperties på produkter via Dapper
     public List<ProductSearchResult> SearchResults { get; set; } = new();
     public string CurrentSearchterm { get; set; }
     #endregion
+    
     public Dictionary<ProductItem, int> CartItem { get; set; } = new();
     
     public bool IsRunning { get; set; } = true;
+    //Butiksmeddelande
     public string NotificationMessage { get; set; }
     
-    
+    //Stegräknare i menyerna
     public int CurrentStep
     {
         get
@@ -52,32 +55,20 @@ public class UserSession
         }
     }
     
-
+    //Nollställer valen i menyerna
     public void ResetSelection()
     {
         SelectedCategoryId = 0;
         SelectedProductId = 0;
         
     }
-
+    //Nollställer sökning
     public void ClearSearch()
     {
         CurrentSearchterm = "";
         SearchResults.Clear();
     }
-    public void ResetAfterPurchase()
-    {
-        CartItem.Clear();
-        FirstName = "";
-        LastName = "";
-        StreetName = "";
-        CityName = "";
-        SelectedCountryId = 0;
-        SelectedPaymentMethodId = 0;
-        SelectedProductId = 0;
-        SelectedCategoryId = 0;
-        
-    }
+    
     
     
 }

@@ -5,6 +5,7 @@ namespace Spelshoppen.UX;
 
 public class CategoryMenu : IMenuPage
 {
+    //Ritar ut sidan, finns i alla menyer som arv
     public void DrawMenuPage(MyDbContext db, UserSession session)
     {
         UIRenderer.DrawBaseLayout(session);
@@ -12,7 +13,8 @@ public class CategoryMenu : IMenuPage
         UIRenderer.DrawNotifications(session);
         UIRenderer.DrawCategoryPrompts(session);
     }
-
+    
+    //Hanterar input i alla menyer som arv
     public void PageInput(ConsoleKeyInfo key, char input, MyDbContext db, UserSession session)
     {
         
@@ -27,7 +29,7 @@ public class CategoryMenu : IMenuPage
             session.SelectedProductId = 0;
         }
     }
-
+    //Ritar ut menyn och specifikt kollar vart man befinner sig i selection
     private static void DrawWindows(MyDbContext db, UserSession session)
     {
         UIRenderer.DrawCategoryMenu(db,"KATEGORIER");
@@ -36,13 +38,14 @@ public class CategoryMenu : IMenuPage
         if (session.SelectedProductId != 0)
             DrawProductDetailsWindow(db, session.SelectedProductId);
     }
-    
+    //Ritar ut Produkt detaljer av vald produkt
     private static void DrawProductDetailsWindow(MyDbContext db, int productId)
     {
         var product = StoreServices.GetFullProduct(db, productId);
         if (product == null) return;
 
         var item = product.ProductItems.FirstOrDefault();
+        //Ritar ut komma om det finns flera genres av en produkt
         var genres = string.Join(", ", product.ProductGenres.Select(pg => pg.Genres.Name));
 
         var productDetails = new List<string>

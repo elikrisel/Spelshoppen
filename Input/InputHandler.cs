@@ -14,10 +14,11 @@ public class InputHandler
         return int.TryParse(firstDigit + restOfInput, out int id) ? id : 0;
     }
     
-    //Används i CategoryMenu och AdminMenu för samma stegprocess
+    //Används i CategoryMenu och AdminMenu främst för att se om man har en categoryId eller productId vald för
+    //navigering
     public static void HandleNavigation(MyDbContext db, UserSession session, char input)
     {
-        //Nollställ
+        //Nollställer och backar tillbaks
         int id = PromptForId(input);
         if (id == 0)
         {
@@ -63,7 +64,7 @@ public class InputHandler
         { 'Q', MenuState.Quit },
     };
     
-    
+    //Strategy-pattern 
     public static readonly Dictionary<MenuState, IMenuPage> Pages = new()
     {
         { MenuState.MainMenu, new MainMenu() },
