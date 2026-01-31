@@ -29,6 +29,14 @@ public class Helpers
     }
     //Printar x linjer enligt användaren
     public static string PrintXNumberOfLines(int number) => new('-', number);
+    
+    public static void ClearLine(int row)
+    {
+        Console.SetCursorPosition(0, row);
+        Console.Write(new string(' ', Console.WindowWidth));
+        Console.SetCursorPosition(0, row); 
+    }
+    
     #region Properties for Featured Menu
     public static int[] SetXPositionOnFeatured => [10, 40, 80];
     public static int SetYPositionOnFeatured => 15;

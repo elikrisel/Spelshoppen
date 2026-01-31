@@ -53,11 +53,9 @@ public class UIRenderer
         int fixedRow = Console.WindowHeight - 5; 
 
         //Går till raden under och tar bort
-        Console.SetCursorPosition(0, fixedRow);
-        Console.Write(new string(' ', Console.WindowWidth)); 
+        Helpers.ClearLine(fixedRow);
         
-        Console.SetCursorPosition(0, fixedRow + 1);
-        Console.Write(new string(' ', Console.WindowWidth));
+        Helpers.ClearLine(fixedRow + 1);
         
         Console.SetCursorPosition(0, fixedRow);
 
@@ -68,14 +66,13 @@ public class UIRenderer
     //Kollar så den skriver ut notiser vid interaktioner i shoppen
     public static void DrawNotifications(UserSession session)
     {
+        int notificationRow = Console.WindowHeight - 7;
         if (!string.IsNullOrEmpty(session.NotificationMessage))
         {
             
-            int notificationRow = Console.WindowHeight - 7;
 
             // Rensar raden först om gamla notiser ligger kvar
-            Console.SetCursorPosition(0, notificationRow);
-            Console.Write(new string(' ', Console.WindowWidth));
+            Helpers.ClearLine(notificationRow);
 
             //Skriver ut den nya notisen
             Console.SetCursorPosition(2, notificationRow);
