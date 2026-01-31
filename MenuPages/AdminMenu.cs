@@ -10,7 +10,7 @@ public class AdminMenu : IMenuPage
     {
         UIRenderer.DrawBaseLayout(session);
         DrawWindows(db, session); 
-        var rows = new List<string>() { "[L] LÄGG TILL", "[P] PROGNOS" };
+        var rows = new List<string>() { "[L] LÄGG TILL PRODUKT", "[T] LÄGG TILL KATEGORI", "[P] PROGNOS" };
         new UX.Window("ADMIN", 20, 1, rows).Draw(); 
         UIRenderer.DrawNotifications(session);
         UIRenderer.DrawCategoryPrompts(session);
@@ -26,6 +26,7 @@ public class AdminMenu : IMenuPage
             switch (command)
             {
                 case 'L': AddProduct(db, session); break;
+                case 'T': CreateNewCategory(db,session); break;
                 case 'P': GetStatistics(db); break;
             }
 
@@ -48,6 +49,16 @@ public class AdminMenu : IMenuPage
             }
     }
 
+    private static void CreateNewCategory(MyDbContext db, UserSession session)
+    {
+        UIRenderer.DrawBaseLayout(session);
+
+        string title = Helpers.Prompt("Ange namn på nya kategorin ");
+
+        AdminService.AddNewCategory(db,title);
+        session.NotificationMessage = $"Kategorin {title} har sparats!";
+    }
+    
     private static void ManageFeaturedProducts(MyDbContext db, UserSession session,int productId)
     {
         bool success = StoreServices.ToggleFeaturedStatus(db, productId);
@@ -101,7 +112,7 @@ public class AdminMenu : IMenuPage
             "",
             "Tryck på valfri tangent för att gå tillbaks."
         };
-        new UX.Window("PROGNOS",20,10,reportRows).Draw();
+        new UX.Window("PROGNOS",50,10,reportRows).Draw();
         Console.ReadKey(true);
     }
     
@@ -112,7 +123,7 @@ public class AdminMenu : IMenuPage
 
         //Väljer kategori ID
         var categoryList = db.Categories.Select(c => $"[{c.Id}] {c.Title}").ToList();
-        new UX.Window("LÄGG TILL: VÄLJ KATEGORI-ID", 20, 10, categoryList).Draw();
+        new UX.Window("LÄGG TILL PRODUKT: VÄLJ KATEGORI-ID", 20, 10, categoryList).Draw();
         
         int.TryParse(Helpers.Prompt("Kategori-ID"), out var categoryId);
 

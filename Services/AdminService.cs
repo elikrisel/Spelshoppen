@@ -64,5 +64,12 @@ public class AdminService
         }
         
     }
+    //Skapar ny Kategori och sparar i databasen
+    public static void AddNewCategory(MyDbContext db, string title)
+    {
+        var newCategory = new Category {Title = title };
+        db.Categories.Add(newCategory);
+        db.SaveChanges();
+    }
     
 }
