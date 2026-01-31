@@ -26,14 +26,14 @@ public class Window
             
             // Om raden är för lång, dela upp den i flera rader
             string[] words = row.Split(' ');
-            string currentLine = "";
+            string currentLine = string.Empty;
 
             foreach (var word in words)
             {
                 if ((currentLine + word).Length > MaxWidth)
                 {
                     result.Add(currentLine.Trim());
-                    currentLine = "";
+                    currentLine = string.Empty;
                 }
                 currentLine += word + " ";
             }

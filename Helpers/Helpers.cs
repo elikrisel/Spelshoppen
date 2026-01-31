@@ -3,7 +3,6 @@ using Spelshoppen.UX;
 
 namespace Spelshoppen;
 
-//TODO: Flytta mer saker till Helpers
 public class Helpers
 {
     //Kollar vilket state jag är i under programmets gång
@@ -30,6 +29,7 @@ public class Helpers
     //Printar x linjer enligt användaren
     public static string PrintXNumberOfLines(int number) => new('-', number);
     
+    //Rensar rader
     public static void ClearLine(int row)
     {
         Console.SetCursorPosition(0, row);
@@ -37,11 +37,11 @@ public class Helpers
         Console.SetCursorPosition(0, row); 
     }
     
-    #region Properties for Featured Menu
+    
     public static int[] SetXPositionOnFeatured => [10, 40, 80];
     public static int SetYPositionOnFeatured => 15;
     public static int MaxTitleLengthOnFeatured => 30;
-    #endregion
+    
     public static string Prompt(string message)
     {
         Console.CursorVisible = true;

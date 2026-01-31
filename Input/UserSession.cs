@@ -12,11 +12,11 @@ public class UserSession
     
     #region CartMenu and Order properties
     //TODO: ADD ADDITIONAL FOR REQUIREMENT
-    public string FirstName { get; set; } = "";
-    public string LastName { get; set; } = "";
-    public string StreetName { get; set; } = "";
-    public string CountryName { get; set; } = "";
-    public string PaymentMethodName { get; set; } = "";
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string StreetName { get; set; } = string.Empty;
+    public string CountryName { get; set; } = string.Empty;
+    public string PaymentMethodName { get; set; } = string.Empty;
     
     public int SelectedCountryId { get; set; }
     public int SelectedPaymentMethodId { get; set; }
@@ -65,7 +65,7 @@ public class UserSession
     //Nollställer sökning
     public void ClearSearch()
     {
-        CurrentSearchterm = "";
+        CurrentSearchterm = string.Empty;
         SearchResults.Clear();
     }
     

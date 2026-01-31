@@ -6,7 +6,6 @@ namespace Spelshoppen.MenuPages;
 
 public class QuitMenu : IMenuPage
 {
-    
     public void DrawMenuPage(MyDbContext db, UserSession session)
     {
         UIRenderer.DrawBaseLayout(session);

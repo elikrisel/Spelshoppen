@@ -49,7 +49,7 @@ public class MainMenu : IMenuPage
         switch (input)
         {
             case '1':
-                if(featured.Count >= 1)
+                if(featured.Count >= 1) //Säkerhetskontroller 
                     StoreServices.ExecutePurchase(db,session,featured[0]);
                 break;
             case '2':
@@ -64,7 +64,6 @@ public class MainMenu : IMenuPage
                 Console.WriteLine($"Du kan bara mellan tre erbjudanden just nu!");
                 break;
         }
-        
         
         
     }

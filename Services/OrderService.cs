@@ -54,12 +54,7 @@ public class OrderService
             if (ex.InnerException != null) Console.WriteLine($"INNER: {ex.InnerException.Message}");
             throw;
         }
-        // finally
-        // {
-        //     //Går tillbaks till initial states        
-        //     session.Status = CheckoutState.ReviewingCart;
-        //     session.State = MenuState.MainMenu;
-        // }
+        
     }
     
     private static Customer GetOrCreateCustomer(MyDbContext db, UserSession session)

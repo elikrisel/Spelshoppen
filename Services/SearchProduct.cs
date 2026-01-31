@@ -7,10 +7,12 @@ namespace Spelshoppen;
 
 public class SearchProduct
 {
+    //SEARCH FUNKTION VIA DAPPER
     public static List<ProductSearchResult> SearchProducts(string searchTerm, MyDbContext db)
     {
         var connection = db.Database.GetDbConnection();
-        string schemaName = "Spelshoppen";
+        //Har ändrat namn på databasen så jag behöver kalla på schemaName för att den ska hitta tables
+        string schemaName = "Spelshoppen"; 
         string sql = $"""
                       SELECT 
                           pi.Id AS ProductItemId, 

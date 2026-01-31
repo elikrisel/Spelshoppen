@@ -14,7 +14,6 @@ public class StoreServices
             .ThenInclude(pg => pg.Genres)
             .FirstOrDefault(p => p.Id == productId);
     
-
     // Vi letar efter ett item beroende på id input och kollar om produkten finns i lagret
     public static ProductItem? GetPurchasableItem(MyDbContext db, int productId) =>
         db.ProductItems
