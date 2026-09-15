@@ -1,0 +1,12 @@
+name: Context Demo
+
+on: workflow_dispatch 
+
+jobs:
+  print-some-stuff:
+    runs-on: windows-latest
+    steps:
+      - name: Step 1
+        run: echo "Hello World from our workflow"
+
+  
