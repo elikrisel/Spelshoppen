@@ -6,7 +6,10 @@ jobs:
   print-some-stuff:
     runs-on: windows-latest
     steps:
-      - name: Step 1
-        run: echo "Hello World from our workflow"
+      -   name: print some stuff
+          run:  |
+              echo "Hello world from workflow"
+              echo "Repository:: ${{ github.action }}"
+              
 
   
